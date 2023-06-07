@@ -3,11 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
 import { JwtModule } from "@auth0/angular-jwt";
 import { UserLoginComponent } from './user-login/user-login.component';
 import { UserSignupComponent } from './user-signup/user-signup.component';
-import {getToken} from "./User/user.service";
+import {getToken, UserService} from "./User/user.service";
 import { WaiterComponent } from './waiter/waiter.component';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
@@ -31,7 +30,6 @@ export function tokenGetter() {
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -41,7 +39,9 @@ export function tokenGetter() {
       },
     }),
   ],
-  providers: [],
+  providers: [
+    {provide: UserService, useClass: UserService},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

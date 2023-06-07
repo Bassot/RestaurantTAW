@@ -18,9 +18,7 @@ let tokenForExport: string = '';
 export function getToken(){
   return tokenForExport;
 }
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UserService {
   private url = 'http://localhost:8080';
   private token: string = '';
