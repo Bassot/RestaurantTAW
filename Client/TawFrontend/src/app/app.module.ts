@@ -37,7 +37,7 @@ export function tokenGetter() {
         tokenGetter: tokenGetter,
         authScheme: "Basic",
         allowedDomains: ["http://localhost:8080"],
-        disallowedRoutes: ["http://localhost:8080/login","http://localhost:8080/register"],
+        disallowedRoutes: ["http://localhost:8080/login","http://localhost:8080/signup"],
       },
     }),
   ],
