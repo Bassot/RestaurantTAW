@@ -16,7 +16,6 @@ export class UserSignupComponent {
       username: username,
       role: role
     }
-    //
     return this.userService.createUser(user).subscribe({
       next: (res) => {
         console.log('User signed up, res: ' + JSON.stringify(res));
@@ -26,5 +25,9 @@ export class UserSignupComponent {
         console.log('Sign up error: ' + JSON.stringify(err));
       }
     });
+  }
+
+  change(){
+    this.router.navigate(['/login']);
   }
 }

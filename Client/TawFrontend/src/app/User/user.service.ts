@@ -83,7 +83,7 @@ export class UserService {
     return this.users$;
   }
 
-  createUser(user: User): Observable<any> {
+  createUser(user: User) {
     return this.http.post(`${this.url}/signup`, user, this.getOptions());
   }
 
