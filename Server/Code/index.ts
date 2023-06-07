@@ -28,6 +28,13 @@ const auth = jwt({
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use( (req,res,next) => {
+    console.log("------------------------------------------------".inverse)
+    console.log("New request for: "+req.url );
+    console.log("Method: "+req.method);
+    next();
+})
+
 app.get('/', function (req, res) {
     res.status(200).json({api_version: '1.1', author: 'BassHound'});
 });
@@ -42,16 +49,16 @@ app.post('/login', (req, res, next) => {
         }
         if (user.validatePassword(password)) {
             let tokendata = {
-                email: req.body.email,
-                username: req.body.username,
-                role: req.body.role,
-                id: req.body.id
+                email: user.email,
+                username: user.username,
+                role: user.role,
+                id: user.id
             };
             console.log("Login granted. Generating token");
             let token_signed = jsonwebtoken.sign(
                 tokendata,
                 process.env.JWT_SECRET as jsonwebtoken.Secret,
-                {expiresIn: '1h'}
+                {expiresIn: '12h'}
             );
 
             // https://jwt.io

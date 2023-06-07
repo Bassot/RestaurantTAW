@@ -11,6 +11,7 @@ import { WaiterComponent } from './waiter/waiter.component';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { CashierComponent } from './cashier/cashier.component';
+import { HomeComponent } from './home/home.component';
 
 export function tokenGetter() {
   return getToken();
@@ -25,6 +26,7 @@ export function tokenGetter() {
     CookComponent,
     BartenderComponent,
     CashierComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,7 +42,8 @@ export function tokenGetter() {
     }),
   ],
   providers: [
-    {provide: UserService, useClass: UserService},
+    UserService,
+    AppComponent
   ],
   bootstrap: [AppComponent]
 })

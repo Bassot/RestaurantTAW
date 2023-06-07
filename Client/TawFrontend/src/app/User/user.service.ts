@@ -59,7 +59,7 @@ export class UserService {
       }));
   }
 
-  get isLoggedIn(): boolean {
+  isLoggedIn(): boolean {
     return this.token !== '';
   }
 

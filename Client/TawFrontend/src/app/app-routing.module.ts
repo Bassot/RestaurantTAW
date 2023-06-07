@@ -6,11 +6,13 @@ import { WaiterComponent } from "./waiter/waiter.component";
 import {CookComponent} from "./cook/cook.component";
 import {BartenderComponent} from "./bartender/bartender.component";
 import {CashierComponent} from "./cashier/cashier.component";
+import {AppComponent} from "./app.component";
+import {HomeComponent} from "./home/home.component";
 
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', component: HomeComponent },
   { path: 'login', component: UserLoginComponent },
   { path: 'signup', component: UserSignupComponent },
   { path: 'waiters', component: WaiterComponent },
