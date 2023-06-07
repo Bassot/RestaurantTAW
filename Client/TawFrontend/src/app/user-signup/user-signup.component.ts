@@ -16,6 +16,7 @@ export class UserSignupComponent {
       username: username,
       role: role
     }
+    //
     return this.userService.createUser(user).subscribe({
       next: (res) => {
         console.log('User signed up, res: ' + JSON.stringify(res));
