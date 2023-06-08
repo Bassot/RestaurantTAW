@@ -1,7 +1,9 @@
 import mongoose = require('mongoose');
-import {Item} from "./Item";
+
 export interface Table extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,
+
+    number: number,
     total_seats: number,
     free_seats: number,
     orders: [{ order: mongoose.Schema.Types.ObjectId}],
@@ -12,6 +14,10 @@ export interface Table extends mongoose.Document {
 }
 
 var userSchema = new mongoose.Schema<Table>( {
+    number: {
+        type: mongoose.SchemaTypes.Number,
+        required: true
+    },
     total_seats: {
         type: mongoose.SchemaTypes.Number,
         required: true
