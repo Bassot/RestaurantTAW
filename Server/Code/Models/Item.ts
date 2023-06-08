@@ -49,7 +49,7 @@ export function getModel() : mongoose.Model< Item >  { // Return Model as single
     return itemModel;
 }
 
-export function newTable( data: any ): Item {
+export function newItem( data: any ): Item {
     var _itemmodel = getModel();
     return new _itemmodel(data);
 }

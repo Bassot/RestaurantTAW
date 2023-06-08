@@ -4,9 +4,9 @@ export interface Table extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,
     total_seats: number,
     free_seats: number,
-    state: "Free" | "Occupied",
-    orders: Item[], //???
+    orders: [{ order: mongoose.Schema.Types.ObjectId}],
     bill: number,
+    isFree: ()=>boolean,
     takeSeat: ()=>void,
     freeSeat: ()=>void
 }
@@ -20,16 +20,15 @@ var userSchema = new mongoose.Schema<Table>( {
         type: mongoose.SchemaTypes.Number,
         required: true
     },
-    state: {
-        type: mongoose.SchemaTypes.String,
-        required: true,
+    orders: [
+        {
+            order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' },
+        }
+    ],
+    bill: {
+        type: mongoose.SchemaTypes.Number,
+        required: true
     },
-    /*
-    orders: {
-        type: //???
-        required: true,
-    },
-    */
 })
 
 userSchema.methods.isFree = function(): boolean {
@@ -41,7 +40,7 @@ userSchema.methods.takeSeat = function(): void {
         this.free_seats--;
     }
     if(this.total_seats!=this.free_seats){
-        this.state = "Occupied";
+        this.isFree = false;
     }
 }
 
@@ -50,7 +49,7 @@ userSchema.methods.freeSeat = function(): void {
         this.free_seats++;
     }
     if(this.total_seats==this.free_seats){
-        this.state = "Free";
+        this.isFree = true;
     }
 }
 
