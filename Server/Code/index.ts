@@ -19,6 +19,8 @@ const bodyParser = require('body-parser');
 const {expressjwt: jwt} = require('express-jwt');
 import jsonwebtoken = require('jsonwebtoken');  // JWT generation
 import * as user from './Models/User';
+import * as table from './Models/Table';
+import {tablesRouter} from "./Routes/tables.routes";
 
 const app = express();
 const auth = jwt({
@@ -89,8 +91,13 @@ app.post("/signup", (req, res) => {
 
 // other routes
 export const userRouter = express.Router();
+
+
 app.use("/users", userRouter);
+app.use("/tables", tablesRouter);
+
 userRouter.use(auth);
+//tablesRouter.use(auth);
 
 // the ENV var DBHOST is set only if the server is running inside a container
 const dbHost = process.env.DBHOST || '127.0.0.1';
@@ -108,10 +115,26 @@ mongoose.connect('mongodb://' + dbHost + ':27017/taw-app2023').then(() => {
         });
         u.setPassword("hound");
         u.setAdmin(true);
-        return u.save();
+        u.save();
+        return table.getModel().findOne({number: 1});
     } else {
         console.log("Admin user already exists");
     }
+
+}).then((data) => {
+    if (!data) {
+        console.log("Creating table");
+        let t = table.newTable({
+            number: 1,
+            seats: 4,
+            isFree: true,
+            bill: 0
+        });
+        return t.save();
+    } else {
+        console.log("Table already exist");
+    }
+
 }).then(() => {
     let server = http.createServer(app);
     server.listen(8080, () => console.log("HTTP Server started on port 8080".green));

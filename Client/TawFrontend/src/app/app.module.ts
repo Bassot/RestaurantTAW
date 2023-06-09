@@ -12,6 +12,9 @@ import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { CashierComponent } from './cashier/cashier.component';
 import { HomeComponent } from './home/home.component';
+import {TablesListComponent} from "./tables-list/tables-list.component";
+import {TableService} from "./Table/table.service";
+import {ReactiveFormsModule} from "@angular/forms";
 
 export function tokenGetter() {
   return getToken();
@@ -27,11 +30,13 @@ export function tokenGetter() {
     BartenderComponent,
     CashierComponent,
     HomeComponent,
+    TablesListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    ReactiveFormsModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -43,6 +48,7 @@ export function tokenGetter() {
   ],
   providers: [
     UserService,
+    TableService,
     AppComponent
   ],
   bootstrap: [AppComponent]

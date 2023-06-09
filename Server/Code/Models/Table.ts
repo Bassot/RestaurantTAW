@@ -4,13 +4,13 @@ export interface Table extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,
 
     number: number,
-    total_seats: number,
-    free_seats: number,
-    orders: [{ order: mongoose.Schema.Types.ObjectId}],
+    seats: number,
+    //orders: [{ order: mongoose.Schema.Types.ObjectId}],
+    isFree: boolean,
+
     bill: number,
-    isFree: ()=>boolean,
-    takeSeat: ()=>void,
-    freeSeat: ()=>void
+    occupyTable: ()=>void,
+    freeTable: ()=>void
 }
 
 var userSchema = new mongoose.Schema<Table>( {
@@ -18,47 +18,37 @@ var userSchema = new mongoose.Schema<Table>( {
         type: mongoose.SchemaTypes.Number,
         required: true
     },
-    total_seats: {
+    seats: {
         type: mongoose.SchemaTypes.Number,
         required: true
     },
-    free_seats: {
-        type: mongoose.SchemaTypes.Number,
+    isFree: {
+        type: mongoose.SchemaTypes.Boolean,
         required: true
     },
+    /*
     orders: [
         {
             order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' },
         }
     ],
+
+     */
     bill: {
         type: mongoose.SchemaTypes.Number,
         required: true
     },
 })
 
-userSchema.methods.isFree = function(): boolean {
-    return this.state == "Free";
+userSchema.methods.occupyTable = function(): void {
+    this.isFree = false;
 }
 
-userSchema.methods.takeSeat = function(): void {
-    if(this.free_seats>0){
-        this.free_seats--;
-    }
-    if(this.total_seats!=this.free_seats){
-        this.isFree = false;
-    }
+userSchema.methods.freeTable = function(): void {
+    this.orders = null;
+    this.bill = 0;
+    this.isTrue = true;
 }
-
-userSchema.methods.freeSeat = function(): void {
-    if(this.free_seats<this.total_seats){
-        this.free_seats++;
-    }
-    if(this.total_seats==this.free_seats){
-        this.isFree = true;
-    }
-}
-
 
 
 

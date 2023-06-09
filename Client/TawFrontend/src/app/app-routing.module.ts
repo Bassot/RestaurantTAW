@@ -6,8 +6,8 @@ import { WaiterComponent } from "./waiter/waiter.component";
 import {CookComponent} from "./cook/cook.component";
 import {BartenderComponent} from "./bartender/bartender.component";
 import {CashierComponent} from "./cashier/cashier.component";
-import {AppComponent} from "./app.component";
 import {HomeComponent} from "./home/home.component";
+import {TablesListComponent} from "./tables-list/tables-list.component";
 
 
 
@@ -18,7 +18,8 @@ const routes: Routes = [
   { path: 'waiters', component: WaiterComponent },
   { path: 'cooks', component: CookComponent },
   { path: 'bartenders', component: BartenderComponent },
-  { path: 'cashiers', component: CashierComponent }
+  { path: 'cashiers', component: CashierComponent },
+  { path: 'cashiers/tables', component: TablesListComponent },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
