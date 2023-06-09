@@ -4,9 +4,6 @@ export interface Item extends mongoose.Document {
     name: string,
     type: "Dish" | "Drink";
     price: number;
-    stock: number
-    getStock: ()=>number,
-    changeStock: (number)=>number
 }
 
 var ItemSchema = new mongoose.Schema<Item>( {
@@ -23,11 +20,7 @@ var ItemSchema = new mongoose.Schema<Item>( {
     price: {
         type: mongoose.SchemaTypes.Number,
         required: true,
-    },
-    stock: {
-        type: mongoose.SchemaTypes.Number,
-        required: true,
-    },
+    }
 })
 
 

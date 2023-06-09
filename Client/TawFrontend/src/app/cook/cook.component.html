@@ -1,1 +1,19 @@
-<p>cook works!</p>
+<div class="container" style="width: 600px; margin-top: 20px;">
+  <h2 class="text-center m-5">Tables List</h2>
+  <table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+      <th></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let item of getAllOrdersInQueue()">
+      <th>{{item.name}}</th>
+      <th>
+        <button class="btn btn-primary" type="submit" (click)="setItemAsInPreparation()">Set as "In Preparation"</button>
+      </th>
+    </tr>
+    </tbody>
+  </table>
+</div>

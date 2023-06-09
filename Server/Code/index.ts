@@ -91,10 +91,11 @@ app.post("/signup", (req, res) => {
 
 // other routes
 export const userRouter = express.Router();
-
+export const queueRouter = express.Router();
 
 app.use("/users", userRouter);
 app.use("/tables", tablesRouter);
+app.use("/queue", queueRouter);
 
 userRouter.use(auth);
 //tablesRouter.use(auth);
