@@ -26,15 +26,15 @@ export class TableService {
     return this.tables$;
   }
 
-  freeTable(table: Table) {
-    return this.httpClient.post(`${this.url}/tables`, table, {headers: new HttpHeaders({
+  freeTable(number: any) {
+    return this.httpClient.post(`${this.url}/tables`, number, {headers: new HttpHeaders({
         'cache-control': 'no-cache',
         'Content-Type': 'application/json'
       }),params: new HttpParams().set('action', "free")});
   }
 
-  occupyTable(table: Table) {
-    return this.httpClient.post(`${this.url}/tables`, table, {headers: new HttpHeaders({
+  occupyTable(number :any) {
+    return this.httpClient.post(`${this.url}/tables`, number, {headers: new HttpHeaders({
       'cache-control': 'no-cache',
       'Content-Type': 'application/json'
     }),params: new HttpParams().set('action', "occupy")});

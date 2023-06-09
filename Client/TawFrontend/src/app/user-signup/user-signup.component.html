@@ -35,7 +35,7 @@
   </div>
 
   <button class="btn btn-primary"
-          (click)="signUp(email.value, password.value, username.value,waiter.checked ? 'Waiter':(cook.checked ? 'Cook':(bartender.checked ? 'Bartender': (cashier.checked ? 'cashier':''))))
+          (click)="signUp(email.value, password.value, username.value,waiter.checked ? 'Waiter':(cook.checked ? 'Cook':(bartender.checked ? 'Bartender': (cashier.checked ? 'waiter':''))))
           ">Sign Up
   </button>
 </div>

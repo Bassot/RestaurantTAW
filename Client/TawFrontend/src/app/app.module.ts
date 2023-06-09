@@ -7,14 +7,15 @@ import { JwtModule } from "@auth0/angular-jwt";
 import { UserLoginComponent } from './user-login/user-login.component';
 import { UserSignupComponent } from './user-signup/user-signup.component';
 import {getToken, UserService} from "./User/user.service";
+import { CashierComponent } from './cashier/cashier.component';
 import { WaiterComponent } from './waiter/waiter.component';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
-import { CashierComponent } from './cashier/cashier.component';
 import { HomeComponent } from './home/home.component';
-import {TablesListComponent} from "./tables-list/tables-list.component";
 import {TableService} from "./Table/table.service";
 import {ReactiveFormsModule} from "@angular/forms";
+import {ItemsMenuComponent} from "./items-menu/items-menu.component";
+import {ItemService} from "./Item/item.service";
 
 export function tokenGetter() {
   return getToken();
@@ -30,7 +31,8 @@ export function tokenGetter() {
     BartenderComponent,
     CashierComponent,
     HomeComponent,
-    TablesListComponent
+    WaiterComponent,
+    ItemsMenuComponent
   ],
   imports: [
     BrowserModule,
@@ -49,6 +51,7 @@ export function tokenGetter() {
   providers: [
     UserService,
     TableService,
+    ItemService,
     AppComponent
   ],
   bootstrap: [AppComponent]
