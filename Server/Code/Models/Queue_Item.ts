@@ -2,8 +2,8 @@ import mongoose = require('mongoose');
 export interface Queue_Item extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,
     name: string,
-    type: "Dish" | "Drink";
-    price: number;
+    type: "Dish" | "Drink",
+    price: number,
     timestamp: Date,    //to order te queue
     status: "Pending" | "Preparing" | "Ready",
     table: number

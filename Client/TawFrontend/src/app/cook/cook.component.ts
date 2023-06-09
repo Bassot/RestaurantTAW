@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Observable} from "rxjs";
 import {Table} from "../Table/table";
 import {TableService} from "../Table/table.service";
+import {QueueService} from "../Queue/queue.service";
+import {Queue_Item} from "../Queue/queue_item";
 
 @Component({
   selector: 'app-cook',
@@ -11,29 +13,33 @@ import {TableService} from "../Table/table.service";
 export class CookComponent implements OnInit{
   // TODO: Observable<queue_items>
   //oppure fare come il prof
-  ordersQueue: Observable<any> = new Observable();
-
-  constructor(private tablesService: TableService) {}
+  itemsInQueue: Queue_Item[] = [];
+  constructor(private queueService: QueueService) {}
 
   ngOnInit(): void {
-    this.fetchTables();
   }
 
-  private fetchTables(): void {
-    this.ordersQueue = this.tablesService.getTables();
-  }
+
 
   //given the table number, it returns all the orders related to that table
   getAllOrdersInQueue(){
-    return null;
+    this.queueService.getAllQueue().subscribe({
+      next: (items) => {
+        console.log('Items in queue retrieved');
+        this.itemsInQueue = items as Queue_Item[];
+      },
+      error: (err) => {
+        console.log('Error retrieving items from queue: ' + err);
+      }
+    });
   }
 
   //methods to the waitress related
   setItemAsInPreparation(){
-
+    //this.queueService.updateItemStatus()
   }
   setItemAsReady(){
-
+    //this.queueService.updateItemStatus()
   }
 
 }
