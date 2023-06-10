@@ -47,7 +47,7 @@ export class UserService {
 
   signIn(curUser: Auth, remember: boolean) {
     console.log('New login request from ' + curUser.email);
-    //TODO: add req params
+    //TODO: headers
     return this.http.post(`${this.url}/login`, curUser).pipe(
       tap((res) => {
         this.token = (res as ReceivedToken).token as string;

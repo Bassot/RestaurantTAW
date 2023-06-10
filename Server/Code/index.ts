@@ -20,7 +20,10 @@ const {expressjwt: jwt} = require('express-jwt');
 import jsonwebtoken = require('jsonwebtoken');  // JWT generation
 import * as user from './Models/User';
 import * as table from './Models/Table';
+
 import {tablesRouter} from "./Routes/tables.routes";
+import {queueRouter} from "./Routes/queue.routes";
+import {userRouter} from "./Routes/user.routes";
 
 const app = express();
 const auth = jwt({
@@ -90,9 +93,6 @@ app.post("/signup", (req, res) => {
 });
 
 // other routes
-export const userRouter = express.Router();
-export const queueRouter = express.Router();
-
 app.use("/users", userRouter);
 app.use("/tables", tablesRouter);
 app.use("/queue", queueRouter);

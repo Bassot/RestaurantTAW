@@ -1,5 +1,8 @@
 import * as user from "../Models/User";
-import {userRouter} from "../index";
+import express from "express";
+
+export const userRouter = express.Router();
+
 
 /*
 userRouter.use(function (req: any, res) {
@@ -7,8 +10,6 @@ userRouter.use(function (req: any, res) {
     res.sendStatus(200);
 });
  */
-
-
 userRouter.get("/", async (req, res) => {
     try {
         let users = await user.getModel().find({});

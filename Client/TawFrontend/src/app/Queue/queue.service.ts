@@ -38,7 +38,7 @@ export class QueueService {
     return this.httpClient.get(this.url + '/table/' + tableId, this.getOptions());
   }
 
-  updateItemStatus(itemId: number, newStatus: string){
+  updateItemStatus(itemId: string, newStatus: string){
     return this.httpClient.patch(this.url + '/'+itemId + '/'+newStatus, this.getOptions());
   }
 }

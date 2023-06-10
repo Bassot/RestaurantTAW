@@ -1,11 +1,13 @@
-import {queueRouter} from "../index";
 import * as queue_item from "../Models/Queue_Item"
 import colors = require('colors');
 
 colors.enabled = true;
 const express = require('express');
 import * as mongoose from 'mongoose';
+const bodyParser = require('body-parser');
 
+
+export const queueRouter = express.Router();
 /**
  * path = localhost:8080/queue/
  */
@@ -13,7 +15,7 @@ import * as mongoose from 'mongoose';
 // posting an array of items in the queue
 // on req.body there is something like: [{nameItem1, ... }, {nameItem2, ... }]
 queueRouter.post('/', (req, res) => {
-    console.log('Adding new items on the queue, received : ' + req.body.name);
+    console.log('Adding new items on the queue, received : ' + req.body);
     let receivedItems = req.body;
     receivedItems.forEach(function (item) {
         item.timestamp = new Date();

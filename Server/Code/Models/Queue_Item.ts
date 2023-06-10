@@ -52,7 +52,7 @@ export function getModel() : mongoose.Model< Queue_Item >  { // Return Model as 
         /*Nel metodo model(), non importa se si passa un nome maiuscolo al singolare, la collezione nel db
          *viene creata sempre in minuscolo al plurale. Tipo 'User'->users.
          */
-        queueItemModel = mongoose.model('Item', getSchema() )
+        queueItemModel = mongoose.model('queue_item', getSchema());
     }
     return queueItemModel;
 }
