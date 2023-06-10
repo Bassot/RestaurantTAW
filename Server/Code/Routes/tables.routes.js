@@ -62,6 +62,21 @@ exports.tablesRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).send(error.message);
     }
 }));
+/*
+tablesRouter.put("/:number", async (req, res) => {
+    const number = req?.params?.number;
+    const updatetable = req.body;
+    try {
+        let tables = await table.getModel().findOneAndUpdate({number: number}, {$set: updateduser});
+        res.status(200).send(JSON.stringify(tables));
+    }
+    catch (error :any) {
+        res.status(500).send(error.message);
+    }
+});
+
+
+ */
 exports.tablesRouter.post("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
