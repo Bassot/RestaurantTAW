@@ -34,10 +34,10 @@ export class QueueService {
     return this.httpClient.get(this.url, this.getOptions());
   }
   getAllDishes(){
-    return this.httpClient.get(this.url, this.getOptions());
+    return this.httpClient.get(this.url+'/dish', this.getOptions());
   }
   getAllDrinks(){
-
+    return this.httpClient.get(this.url+'/drink', this.getOptions());
   }
 
   getTableItems(tableId: number){
@@ -45,6 +45,10 @@ export class QueueService {
   }
 
   updateItemStatus(itemId: string, newStatus: string){
-    return this.httpClient.patch(this.url + '/'+itemId + '/'+newStatus, this.getOptions());
+    let params = {
+      id: itemId,
+      status: newStatus
+    }
+    return this.httpClient.post(this.url + '/update', params);
   }
 }
