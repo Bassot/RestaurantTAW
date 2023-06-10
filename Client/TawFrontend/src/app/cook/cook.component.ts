@@ -4,6 +4,7 @@ import {Table} from "../Table/table";
 import {TableService} from "../Table/table.service";
 import {QueueService} from "../Queue/queue.service";
 import {Queue_Item} from "../Queue/queue_item";
+import {SocketioService} from "../Socketio/socketio.service";
 
 @Component({
   selector: 'app-cook',
@@ -14,15 +15,17 @@ export class CookComponent implements OnInit{
   // TODO: Observable<queue_items>
   //oppure fare come il prof
   itemsInQueue: Queue_Item[] = [];
-  constructor(private queueService: QueueService) {}
+  constructor(private queueService: QueueService, private socketService: SocketioService) {}
 
   ngOnInit(): void {
     this.refreshQueue();
+    this.socketService.connect().subscribe((m)=>{
+      this.refreshQueue();
+    })
   }
 
-  //given the table number, it returns all the orders related to that table
   refreshQueue(){
-    this.queueService.getAllQueue().subscribe({
+    this.queueService.getAllDishes().subscribe({
       next: (items) => {
         console.log('Items in queue retrieved');
         this.itemsInQueue = items as Queue_Item[];
@@ -32,13 +35,16 @@ export class CookComponent implements OnInit{
       }
     });
   }
-
   //methods to the waitress related
-  setItemAsInPreparation(){
-    //this.queueService.updateItemStatus()
+  updateItemStatus(itemId: string, newStatus: string){
+    console.log('Request for updating, item: ' + itemId + ', new status: ' + newStatus);
+    this.queueService.updateItemStatus(itemId, newStatus).subscribe({
+      next: (itemUpdated) => {
+        console.log('Item status updated, received: ' + JSON.stringify(itemUpdated));
+      },
+      error: (err) => {
+        console.log('Error updating status : ' + err);
+      }
+    });
   }
-  setItemAsReady(){
-    //this.queueService.updateItemStatus()
-  }
-
 }

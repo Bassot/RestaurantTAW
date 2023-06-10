@@ -106,4 +106,8 @@ export class UserService {
   getRole(){
     return (jwt_decode(this.token) as Token).role;
   }
+
+  getUrl(){
+    return this.url;
+  }
 }

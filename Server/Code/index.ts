@@ -19,6 +19,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const {expressjwt: jwt} = require('express-jwt');
 import jsonwebtoken = require('jsonwebtoken');  // JWT generation
+const io = require('socket.io');
+
+
 import * as user from './Models/User';
 import * as table from './Models/Table';
 import * as item from './Models/Item';
@@ -30,6 +33,7 @@ import {menuRouter} from "./Routes/menu.routes";
 
 
 const app = express();
+export let ios;
 const auth = jwt({
     secret: process.env.JWT_SECRET,
     algorithms: ["HS256"]
@@ -37,10 +41,10 @@ const auth = jwt({
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use( (req,res,next) => {
+app.use((req, res, next) => {
     console.log("------------------------------------------------".inverse)
-    console.log("New request for: "+req.url );
-    console.log("Method: "+req.method);
+    console.log("New request for: " + req.url);
+    console.log("Method: " + req.method);
     next();
 })
 
@@ -122,16 +126,16 @@ mongoose.connect('mongodb://' + dbHost + ':27017/taw-app2023').then(() => {
         u.setPassword("hound");
         u.setAdmin(true);
         u.save();
-        } else {
+    } else {
         console.log("Admin user already exists");
-        }
+    }
     return table.getModel().findOne({number: 1});
 
 }).then((data) => {
     if (!data) {
         console.log("Creating tables");
-        let j=1;
-        for(let i=2;i<=7;i++){
+        let j = 1;
+        for (let i = 2; i <= 7; i++) {
             let t = table.newTable({
                 number: j,
                 seats: i,
@@ -145,10 +149,9 @@ mongoose.connect('mongodb://' + dbHost + ':27017/taw-app2023').then(() => {
         console.log("Table already exist");
     }
     return item.getModel().findOne({name: "Pizza"});
-
 }).then((data) => {
     if (!data) {
-        console.log("Creating items");
+        console.log("Creating some items");
         item.newItem({
             name: "Pizza",
             type: "Dish",
@@ -191,6 +194,15 @@ mongoose.connect('mongodb://' + dbHost + ':27017/taw-app2023').then(() => {
 
 }).then(() => {
     let server = http.createServer(app);
+    ios = io(server, {
+        cors:
+            {
+                origin: '*',
+            }
+    });
+    ios.on('connection', (client) => {
+        console.log('Socket.io client connected'.green);
+    });
     server.listen(8080, () => console.log("HTTP Server started on port 8080".green));
 }).catch(err => console.log(err));
 
