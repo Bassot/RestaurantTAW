@@ -68,6 +68,7 @@ export class ItemsMenuComponent implements OnInit {
       name: name,
       type: type,
       price: price,
+      timestamp: new Date(),
       status: 'Pending',
       table: this.table_number,
     };
