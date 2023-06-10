@@ -8,8 +8,9 @@
     </thead>
 
     <tbody>
-    <tr *ngFor="let item of getAllOrdersInQueue()">
+    <tr *ngFor="let item of itemsInQueue">
       <th>{{item.name}}</th>
+      <th>{{item.table}}</th>
       <th>
         <button class="btn btn-primary" type="submit" (click)="setItemAsInPreparation()">Set as "In Preparation"</button>
       </th>

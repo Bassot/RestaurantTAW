@@ -17,12 +17,11 @@ export class CookComponent implements OnInit{
   constructor(private queueService: QueueService) {}
 
   ngOnInit(): void {
+    this.refreshQueue();
   }
 
-
-
   //given the table number, it returns all the orders related to that table
-  getAllOrdersInQueue(){
+  refreshQueue(){
     this.queueService.getAllQueue().subscribe({
       next: (items) => {
         console.log('Items in queue retrieved');

@@ -31,7 +31,13 @@ export class QueueService {
   }
 
   getAllQueue(){
-    return this.httpClient.get(this.url + '/table', this.getOptions());
+    return this.httpClient.get(this.url, this.getOptions());
+  }
+  getAllDishes(){
+    return this.httpClient.get(this.url, this.getOptions());
+  }
+  getAllDrinks(){
+
   }
 
   getTableItems(tableId: number){

@@ -29,6 +29,16 @@ queueRouter.post('/', (req, res) => {
         return res.status(404).json({error: true, errormessage: "Mongo error: " + err});
     })
 });
+
+queueRouter.get('/', (req, res) => {
+        console.log('GET request for all queue items');
+        // sorting by date
+        queue_item.getModel().find().sort({timestamp: 1}).then((items) => {
+            return res.status(200).json(items);
+        }).catch((err) => {
+            return res.status(404).send('DB error: ' + err);
+        });
+});
 // returning all the items related to a table id
 // returning all the queue if no id given
 queueRouter.get('/table/:tableid', (req, res) => {
