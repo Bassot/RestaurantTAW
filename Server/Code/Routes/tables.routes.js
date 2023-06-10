@@ -62,37 +62,14 @@ exports.tablesRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).send(error.message);
     }
 }));
-/*
-tablesRouter.put("/:number", async (req, res) => {
-    const number = req?.params?.number;
-    const updatetable = req.body;
+exports.tablesRouter.put("/:number", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const number = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.number;
     try {
-        let tables = await table.getModel().findOneAndUpdate({number: number}, {$set: updateduser});
-        res.status(200).send(JSON.stringify(tables));
-    }
-    catch (error :any) {
-        res.status(500).send(error.message);
-    }
-});
-
-
- */
-exports.tablesRouter.post("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    try {
-        const number = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.number;
-        const action = (_b = req === null || req === void 0 ? void 0 : req.query) === null || _b === void 0 ? void 0 : _b.action;
-        let tabletoupdate = yield table.getModel().findOne({ number: number });
-        if (tabletoupdate && action == "Free") {
-            tabletoupdate.freeTable();
-            res.status(200);
-        }
-        else if (tabletoupdate && action == "Occupy") {
-            tabletoupdate.occupyTable();
-            res.status(200);
-        }
+        yield table.getModel().findOneAndUpdate({ number: number }, { isFree: false });
+        res.status(200).send("Ok, table occupied");
     }
     catch (error) {
-        res.status(404).send(error);
+        res.status(500).send(error.message);
     }
 }));
