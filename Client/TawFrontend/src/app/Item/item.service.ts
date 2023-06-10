@@ -8,14 +8,25 @@ import {Item} from './item';
 })
 export class ItemService {
   private url = 'http://localhost:8080';
+
+  private headers = new HttpHeaders({
+    'cache-control': 'no-cache',
+    'Content-Type':  'application/json'
+  });
   private items$: Subject<Item[]> = new Subject();
+
 
   constructor(private httpClient: HttpClient) {
   }
 
+  getOptions(){
+    return {
+      headers: this.headers
+    };
+  }
 
   private refreshItems() {
-    this.httpClient.get<Item[]>(`${this.url}/items`)
+    this.httpClient.get<Item[]>(`${this.url}/menu`)
       .subscribe(items => {
         this.items$.next(items);
       });

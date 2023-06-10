@@ -1,3 +1,4 @@
+
 const dotenv = require('dotenv').config();
 import colors = require('colors');
 
@@ -25,6 +26,8 @@ import * as item from './Models/Item';
 import {tablesRouter} from "./Routes/tables.routes";
 import {queueRouter} from "./Routes/queue.routes";
 import {userRouter} from "./Routes/user.routes";
+import {menuRouter} from "./Routes/menu.routes";
+
 
 const app = express();
 const auth = jwt({
@@ -97,6 +100,7 @@ app.post("/signup", (req, res) => {
 app.use("/users", userRouter);
 app.use("/tables", tablesRouter);
 app.use("/queue", queueRouter);
+app.use("/menu", menuRouter);
 
 userRouter.use(auth);
 //tablesRouter.use(auth);

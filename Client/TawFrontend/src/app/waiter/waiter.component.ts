@@ -24,7 +24,7 @@ import {TableService} from "../Table/table.service";
             <td>{{table.seats}}</td>
             <td *ngIf="table.isFree == false">Occupied</td>
             <td *ngIf="table.isFree == false">
-              <button class="btn btn-info" [routerLink]="['/menu']">Add order</button> &nbsp;
+              <button class="btn btn-info" [routerLink]="['/menu', {'number': table.number}]">Add order</button> &nbsp;
               <button class="btn btn-primary" [routerLink]="['table/', table.number]">Orders status</button> &nbsp;
             </td>
             <td *ngIf="table.isFree == true">Free</td>

@@ -13,7 +13,7 @@ import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { HomeComponent } from './home/home.component';
 import {TableService} from "./Table/table.service";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ItemsMenuComponent} from "./items-menu/items-menu.component";
 import {ItemService} from "./Item/item.service";
 
@@ -34,20 +34,21 @@ export function tokenGetter() {
     WaiterComponent,
     ItemsMenuComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        authScheme: "Basic",
-        allowedDomains: ["http://localhost:8080"],
-        disallowedRoutes: ["http://localhost:8080/login","http://localhost:8080/signup"],
-      },
-    }),
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: tokenGetter,
+                authScheme: "Basic",
+                allowedDomains: ["http://localhost:8080"],
+                disallowedRoutes: ["http://localhost:8080/login", "http://localhost:8080/signup"],
+            },
+        }),
+        FormsModule,
+    ],
   providers: [
     UserService,
     TableService,
