@@ -140,7 +140,7 @@ mongoose.connect('mongodb://' + dbHost + ':27017/taw-app2023').then(() => {
     } else {
         console.log("Table already exist");
     }
-    return item.getModel().findOne({name: "pizza"});
+    return item.getModel().findOne({name: "Pizza"});
 
 }).then((data) => {
     if (!data) {

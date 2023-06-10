@@ -26,7 +26,6 @@ import {TableService} from "../Table/table.service";
             <td *ngIf="table.isFree == false">
               <button class="btn btn-info" [routerLink]="['/menu']">Add order</button> &nbsp;
               <button class="btn btn-primary" [routerLink]="['table/', table.number]">Orders status</button> &nbsp;
-              <button class="btn btn-success" (click)="freeTable(table.number)">Free table</button>
             </td>
             <td *ngIf="table.isFree == true">Free</td>
             <td *ngIf="table.isFree == true">
@@ -50,11 +49,6 @@ export class WaiterComponent implements OnInit {
     this.tables$ = this.tablesService.getTables();
   }
 
-  freeTable(number :any): void {
-    this.tablesService.freeTable(number).subscribe({
-      next: () => this.fetchTables()
-    });
-  }
 
   occupyTable(number: any): void {
     this.tablesService.occupyTable(number).subscribe({

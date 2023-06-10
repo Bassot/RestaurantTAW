@@ -8,11 +8,20 @@ import {Table} from './table';
 })
 export class TableService {
   private url = 'http://localhost:8080';
+
+  private headers = new HttpHeaders({
+    'cache-control': 'no-cache',
+    'Content-Type':  'application/json'
+  });
   private tables$: Subject<Table[]> = new Subject();
 
   constructor(private httpClient: HttpClient) {}
 
-
+  getOptions(){
+    return {
+      headers: this.headers
+    };
+  }
 
   private refreshTables() {
     this.httpClient.get<Table[]>(`${this.url}/tables`)
@@ -26,17 +35,8 @@ export class TableService {
     return this.tables$;
   }
 
-  freeTable(number: any) {
-    return this.httpClient.post(`${this.url}/tables`, number, {headers: new HttpHeaders({
-        'cache-control': 'no-cache',
-        'Content-Type': 'application/json'
-      }),params: new HttpParams().set('action', "free")});
-  }
 
-  occupyTable(number :any) {
-    return this.httpClient.post(`${this.url}/tables`, number, {headers: new HttpHeaders({
-      'cache-control': 'no-cache',
-      'Content-Type': 'application/json'
-    }),params: new HttpParams().set('action', "occupy")});
+  occupyTable(number :any) : Observable<string>{
+    return this.httpClient.put(`${this.url}/tables/${number}`,  this.getOptions(), { responseType: 'text' });
   }
 }

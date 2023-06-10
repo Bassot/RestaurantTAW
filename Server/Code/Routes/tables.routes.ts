@@ -30,13 +30,12 @@ tablesRouter.get("/", async (req, res) => {
     }
 });
 
-/*
+
 tablesRouter.put("/:number", async (req, res) => {
     const number = req?.params?.number;
-    const updatetable = req.body;
     try {
-        let tables = await table.getModel().findOneAndUpdate({number: number}, {$set: updateduser});
-        res.status(200).send(JSON.stringify(tables));
+        await table.getModel().findOneAndUpdate({number: number}, {isFree: false});
+        res.status(200).send("Ok, table occupied");
     }
     catch (error :any) {
         res.status(500).send(error.message);
@@ -44,26 +43,8 @@ tablesRouter.put("/:number", async (req, res) => {
 });
 
 
- */
 
-tablesRouter.post("/:id", async (req, res) => {
-    try {
-        const number = req?.params?.number;
-        const action = req?.query?.action;
-        let tabletoupdate = await table.getModel().findOne({number: number});
 
-        if (tabletoupdate && action=="Free") {
-            tabletoupdate.freeTable();
-            res.status(200);
-        }
-        else if(tabletoupdate && action=="Occupy"){
-                tabletoupdate.occupyTable();
-                res.status(200);
-            }
 
-    } catch (error) {
-        res.status(404).send(error);
-    }
-});
 
 
