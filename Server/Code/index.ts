@@ -20,6 +20,7 @@ const {expressjwt: jwt} = require('express-jwt');
 import jsonwebtoken = require('jsonwebtoken');  // JWT generation
 import * as user from './Models/User';
 import * as table from './Models/Table';
+import * as item from './Models/Item';
 
 import {tablesRouter} from "./Routes/tables.routes";
 import {queueRouter} from "./Routes/queue.routes";
@@ -117,23 +118,71 @@ mongoose.connect('mongodb://' + dbHost + ':27017/taw-app2023').then(() => {
         u.setPassword("hound");
         u.setAdmin(true);
         u.save();
-        return table.getModel().findOne({number: 1});
-    } else {
+        } else {
         console.log("Admin user already exists");
-    }
+        }
+    return table.getModel().findOne({number: 1});
 
 }).then((data) => {
     if (!data) {
-        console.log("Creating table");
-        let t = table.newTable({
-            number: 1,
-            seats: 4,
-            isFree: true,
-            bill: 0
-        });
-        return t.save();
+        console.log("Creating tables");
+        let j=1;
+        for(let i=2;i<=7;i++){
+            let t = table.newTable({
+                number: j,
+                seats: i,
+                isFree: true,
+                bill: 0
+            });
+            t.save();
+            j++;
+        }
     } else {
         console.log("Table already exist");
+    }
+    return item.getModel().findOne({name: "pizza"});
+
+}).then((data) => {
+    if (!data) {
+        console.log("Creating items");
+        item.newItem({
+            name: "Pizza",
+            type: "Dish",
+            price: 6.0
+        }).save();
+        item.newItem({
+            name: "Pasta con tonno",
+            type: "Dish",
+            price: 5.0
+        }).save();
+        item.newItem({
+            name: "Croccantelle",
+            type: "Dish",
+            price: 1.0
+        }).save();
+        item.newItem({
+            name: "Panino",
+            type: "Dish",
+            price: 4.0
+        }).save();
+        item.newItem({
+            name: "Birra",
+            type: "Drink",
+            price: 4.0
+        }).save();
+        item.newItem({
+            name: "Coca Cola",
+            type: "Drink",
+            price: 2.0
+        }).save();
+        item.newItem({
+            name: "Gingerino",
+            type: "Drink",
+            price: 2.0
+        }).save();
+
+    } else {
+        console.log("Items already exist");
     }
 
 }).then(() => {

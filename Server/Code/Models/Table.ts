@@ -7,8 +7,9 @@ export interface Table extends mongoose.Document {
     seats: number,
     //orders: [{ order: mongoose.Schema.Types.ObjectId}],
     isFree: boolean,
-
     bill: number,
+
+    waiter: [{ user: mongoose.Schema.Types.ObjectId}],
     occupyTable: ()=>void,
     freeTable: ()=>void
 }
@@ -38,6 +39,11 @@ var userSchema = new mongoose.Schema<Table>( {
         type: mongoose.SchemaTypes.Number,
         required: true
     },
+    waiter: [
+        {
+            waiter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        }
+    ],
 })
 
 userSchema.methods.occupyTable = function(): void {

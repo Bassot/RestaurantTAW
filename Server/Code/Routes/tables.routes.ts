@@ -30,6 +30,22 @@ tablesRouter.get("/", async (req, res) => {
     }
 });
 
+/*
+tablesRouter.put("/:number", async (req, res) => {
+    const number = req?.params?.number;
+    const updatetable = req.body;
+    try {
+        let tables = await table.getModel().findOneAndUpdate({number: number}, {$set: updateduser});
+        res.status(200).send(JSON.stringify(tables));
+    }
+    catch (error :any) {
+        res.status(500).send(error.message);
+    }
+});
+
+
+ */
+
 tablesRouter.post("/:id", async (req, res) => {
     try {
         const number = req?.params?.number;
