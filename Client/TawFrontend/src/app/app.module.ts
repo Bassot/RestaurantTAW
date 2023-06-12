@@ -18,7 +18,7 @@ import {ItemsMenuComponent} from "./items-menu/items-menu.component";
 import {ItemService} from "./Item/item.service";
 
 export function tokenGetter() {
-  return localStorage.getItem("auth_jwt");
+  return localStorage.getItem('auth_jwt');
 }
 @NgModule({
   declarations: [
@@ -41,7 +41,6 @@ export function tokenGetter() {
         JwtModule.forRoot({
             config: {
                 tokenGetter: tokenGetter,
-                authScheme: "Basic",
                 allowedDomains: ["http://localhost:8080"],
                 disallowedRoutes: ["http://localhost:8080/login", "http://localhost:8080/signup"],
             },
