@@ -18,9 +18,8 @@ import {ItemsMenuComponent} from "./items-menu/items-menu.component";
 import {ItemService} from "./Item/item.service";
 
 export function tokenGetter() {
-  return getToken();
+  return localStorage.getItem("auth_jwt");
 }
-
 @NgModule({
   declarations: [
     AppComponent,
