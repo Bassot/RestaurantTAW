@@ -47,6 +47,15 @@ app.use((req, res, next) => {
     console.log("Method: " + req.method);
     next();
 })
+/*
+// auth debug
+app.use(function (req: any, res) {
+    console.log('HEADER auth: ' + req.get('Authorization'));
+    console.log('Auth : ' + req.auth);
+    console.log('Headers : ' + JSON.stringify(req.headers));
+    req.next();
+});
+ */
 
 app.get('/', function (req, res) {
     res.status(200).json({api_version: '1.1', author: 'BassHound'});
@@ -101,13 +110,10 @@ app.post("/signup", (req, res) => {
 });
 
 // other routes
-app.use("/users", userRouter);
-app.use("/tables", tablesRouter);
-app.use("/queue", queueRouter);
-app.use("/menu", menuRouter);
-
-userRouter.use(auth);
-//tablesRouter.use(auth);
+app.use("/users", auth, userRouter);
+app.use("/tables", auth, tablesRouter);
+app.use("/queue", auth, queueRouter);
+app.use("/menu", auth, menuRouter);
 
 // the ENV var DBHOST is set only if the server is running inside a container
 const dbHost = process.env.DBHOST || '127.0.0.1';

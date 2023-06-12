@@ -31,7 +31,7 @@ export class CookComponent implements OnInit{
         this.itemsInQueue = items as Queue_Item[];
       },
       error: (err) => {
-        console.log('Error retrieving items from queue: ' + err);
+        console.log('Error retrieving items from queue: ' + JSON.stringify(err));
       }
     });
   }

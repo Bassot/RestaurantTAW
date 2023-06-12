@@ -10,7 +10,6 @@ export const queueRouter = express.Router();
 /**
  * path = localhost:8080/queue/
  */
-
 // posting an array of items in the queue
 // on req.body there is something like: [{nameItem1, ... }, {nameItem2, ... }]
 queueRouter.post('/', (req, res) => {

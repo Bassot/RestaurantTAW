@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Queue_Item} from "./queue_item";
 import {tap} from "rxjs";
+import {UserService} from "../User/user.service";
 
 @Injectable({
   providedIn: 'root'
@@ -9,15 +10,15 @@ import {tap} from "rxjs";
 export class QueueService {
 
   private url = 'http://localhost:8080/queue';
-  private headers = new HttpHeaders({
-    'cache-control': 'no-cache',
-    'Content-Type':  'application/json'
-  });
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private userService: UserService) { }
 
   getOptions(){
     return {
-      headers: this.headers
+      headers: new HttpHeaders({
+        //'Authorization': 'Bearer ' + this.userService.getToken(),
+        'cache-control': 'no-cache',
+        'Content-Type':  'application/json'
+      })
     };
   }
 
