@@ -56,7 +56,6 @@ app.use(function (req: any, res) {
     req.next();
 });
  */
-
 app.get('/', function (req, res) {
     res.status(200).json({api_version: '1.1', author: 'BassHound'});
 });
@@ -140,16 +139,14 @@ mongoose.connect('mongodb://' + dbHost + ':27017/taw-app2023').then(() => {
 }).then((data) => {
     if (!data) {
         console.log("Creating tables");
-        let j = 1;
-        for (let i = 2; i <= 7; i++) {
+        for (let i = 1; i < 4; i++) {
             let t = table.newTable({
-                number: j,
-                seats: i,
+                number: i,
+                seats: 4,
                 isFree: true,
                 bill: 0
             });
             t.save();
-            j++;
         }
     } else {
         console.log("Table already exist");

@@ -17,6 +17,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ItemsMenuComponent} from "./items-menu/items-menu.component";
 import {ItemService} from "./Item/item.service";
 
+//TODO: remove auth library
 export function tokenGetter() {
   return localStorage.getItem('auth_jwt');
 }

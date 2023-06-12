@@ -22,13 +22,15 @@ export function getToken(){
 export class UserService {
   private url = 'http://localhost:8080';
   private token: string = '';
-  private headers = new HttpHeaders({
-    'cache-control': 'no-cache',
-    'Content-Type':  'application/json'
-  });
+  private headers: HttpHeaders;
   private users$: Subject<User[]> = new Subject();
 
   constructor(private http: HttpClient) {
+    this.headers = new HttpHeaders({
+      'Authentication' : 'Bearer ' + this.getToken(),
+      'cache-control': 'no-cache',
+      'Content-Type':  'application/json'
+    });
     const loadedToken = localStorage.getItem('auth_jwt');
     if (!loadedToken || loadedToken.length < 1) {
       console.log("No token found in local storage");
@@ -71,8 +73,9 @@ export class UserService {
   }
 
   private refreshUsers() {
-    this.http.get<User[]>(`${this.url}/users`)
-      .subscribe(users => {
+    this.http.get<User[]>(`${this.url}/users`, {
+      headers: this.headers
+    }).subscribe(users => {
         this.users$.next(users);
       });
   }
@@ -85,28 +88,22 @@ export class UserService {
   createUser(user: User) {
     return this.http.post(`${this.url}/signup`, user, this.getOptions());
   }
-
-
+  //TODO: updating auth rules
   deleteUser(username: string): Observable<string> {
     return this.http.delete(`${this.url}/users/${username}`, {responseType: 'text'});
   }
-
   getUser(username: string): Observable<User> {
     return this.http.get<User>(`${this.url}/users/${username}`);
   }
-
   updateUser(username: string, user: User): Observable<string> {
     return this.http.put(`${this.url}/users/${username}`, user, {responseType: 'text'});
   }
-
   public getToken(){
     return this.token;
   }
-
   getRole(){
     return (jwt_decode(this.token) as Token).role;
   }
-
   getUrl(){
     return this.url;
   }

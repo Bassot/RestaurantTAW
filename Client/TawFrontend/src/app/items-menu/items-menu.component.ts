@@ -3,9 +3,9 @@ import { Observable } from 'rxjs';
 import { Item } from '../Item/item';
 import {ItemService} from "../Item/item.service";
 import {Queue_Item} from "../Queue/queue_item";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {QueueService} from "../Queue/queue.service";
-
+import {ObjectId} from "bson";
 @Component({
   selector: 'app-items-menu',
   template: `
@@ -47,9 +47,12 @@ import {QueueService} from "../Queue/queue.service";
 export class ItemsMenuComponent implements OnInit {
   items$: Observable<Item[]> = new Observable();
 
-  queue_items: Queue_Item[] = [];
+  queue_items: any = [];
   table_number :any;
-  constructor(private itemService: ItemService, private route: ActivatedRoute, private queueService: QueueService) {}
+  constructor(private itemService: ItemService,
+              private route: ActivatedRoute,
+              private queueService: QueueService,
+              private router: Router) {}
 
   ngOnInit(): void {
     this.fetchItems();
@@ -63,19 +66,28 @@ export class ItemsMenuComponent implements OnInit {
   }
 
   addToOrder(name: string, type: string, price:number): void {
-    const item: Queue_Item = {
-      _id: '',
+    const item = {
       name: name,
       type: type,
       price: price,
-      timestamp: new Date(),
+      timestamp: undefined, // will be populated on server side
       status: 'Pending',
       table: this.table_number,
     };
     this.queue_items.push(item);
+    console.log('Item added: ' + JSON.stringify(item));
   }
 
   completeOrder(): void{
-    this.queueService.insertOrder(this.queue_items);
+    this.queueService.insertOrder(this.queue_items).subscribe({
+      next: (res) => {
+        console.log('Order inserted: ' + JSON.stringify(res));
+        this.queue_items = [];
+        this.router.navigate(['/waiters']);
+      },
+      error: (err) => {
+        console.log('Error inserting order: ' + JSON.stringify(err));
+      }
+    });
   }
 }
