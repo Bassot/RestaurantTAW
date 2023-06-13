@@ -26,19 +26,21 @@ export class BartenderComponent implements OnInit{
   }
 
   refreshQueue() {
-    this.queueService.getAllDrinks().subscribe({
-      next: (items) => {
-        console.log('Items in queue retrieved');
-        this.itemsInQueue = items as Queue_Item[];
-      },
-      error: (err) => {
-        console.log('Error retrieving items from queue: ' + JSON.stringify(err));
-      }
-    });
     this.tablesService.getTables().subscribe({
       next: (tables) => {
         console.log('Tables retrieved');
         this.tables = tables as Table[];
+
+        // retreiving items queue data
+        this.queueService.getAllDrinks().subscribe({
+          next: (items) => {
+            console.log('Items in queue retrieved');
+            this.itemsInQueue = items as Queue_Item[];
+          },
+          error: (err) => {
+            console.log('Error retrieving items from queue: ' + JSON.stringify(err));
+          }
+        });
       },
       error: (err) => {
         console.log('Error retrieving tables from DB: ' + JSON.stringify(err));

@@ -25,19 +25,21 @@ export class CookComponent implements OnInit {
   }
 
   refreshQueue() {
-    this.queueService.getAllDishes().subscribe({
-      next: (items) => {
-        console.log('Items in queue retrieved');
-        this.itemsInQueue = items as Queue_Item[];
-      },
-      error: (err) => {
-        console.log('Error retrieving items from queue: ' + JSON.stringify(err));
-      }
-    });
     this.tablesService.getTables().subscribe({
       next: (tables) => {
         console.log('Tables retrieved');
         this.tables = tables as Table[];
+
+        // retreiveng items data
+        this.queueService.getAllDishes().subscribe({
+          next: (items) => {
+            console.log('Items in queue retrieved');
+            this.itemsInQueue = items as Queue_Item[];
+          },
+          error: (err) => {
+            console.log('Error retrieving items from queue: ' + JSON.stringify(err));
+          }
+        });
       },
       error: (err) => {
         console.log('Error retrieving tables from DB: ' + JSON.stringify(err));
@@ -46,7 +48,7 @@ export class CookComponent implements OnInit {
   }
 
   getItemsRelatedToTable(tableNum: number): Queue_Item[] {
-    return this.itemsInQueue.filter(function (item) {
+    return this.itemsInQueue.filter((item) => {
       return item.table == tableNum;
     });
   }

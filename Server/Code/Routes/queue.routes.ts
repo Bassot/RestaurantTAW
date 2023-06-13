@@ -1,6 +1,9 @@
 import * as queue_item from "../Models/Queue_Item"
 import colors = require('colors');
+
+const PDFDocument = require('pdfkit');
 import {ios} from '../index';
+import {Queue_Item} from "../Models/Queue_Item";
 
 colors.enabled = true;
 const express = require('express');
@@ -33,7 +36,6 @@ queueRouter.get('/:type', (req, res) => {
         filter = {type: 'Dish'};
     else if (req.params.type == 'drink')
         filter = {type: 'Drink'};
-
     // else -> getting all the queue
     queue_item.getModel().find(filter).sort({timestamp: 1, table: 1}).then((items) => {
         return res.status(200).json(items);
@@ -58,8 +60,7 @@ queueRouter.delete('/table/:tableid', (req, res) => {
         if (items.deletedCount > 0) {
             notify();
             return res.status(200).json({error: false, errormessage: ""});
-        }
-        else
+        } else
             return res.status(404).json({error: true, errormessage: "Invalid table id"});
     }).catch((err) => {
         return res.status(404).json({error: true, errormessage: "Mongo error: " + err});
@@ -83,6 +84,26 @@ queueRouter.put('/update', (req, res) => {
         return res.status(404).json({error: true, errormessage: "Invalid id item"});
     })
 });
+
+queueRouter.post('/emitReceiptPDF', (req, res) => {
+    console.log('Creating receipt PDF');
+    let tableNum = req.body.tableNum;
+    let date = new Date();
+    let items = req.body.items;
+    let total = req.body.total;
+    const doc = new PDFDocument({bufferPages: true, font: 'Courier'});
+    doc.fontSize(20).text('RECEIPT table ' + tableNum);
+    doc.fontSize(12).text('Date: ' + date);
+    doc.fontSize(20).text('--------------------------------');
+    items.forEach((item) => {
+        doc.fontSize(12).text(' ' + item.name + '  €' + item.price);
+    })
+    doc.fontSize(20).text('--------------------------------');
+    doc.fontSize(15).text('TOTAL: €' + total);
+    doc.end();
+
+    doc.pipe(res);
+})
 
 function notify() {
     let m = 'Hello';

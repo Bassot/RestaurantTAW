@@ -11,31 +11,37 @@ import {Queue_Item} from "../Queue/queue_item";
   templateUrl: './cashier.component.html',
   styleUrls: ['./cashier.component.css']
 })
-export class CashierComponent implements OnInit{
+export class CashierComponent implements OnInit {
   itemsInQueue: Queue_Item[] = [];
   tables: Table[] = [];
-  constructor(private queueService: QueueService, private tablesService: TableService, private socketService: SocketioService) {}
+
+  constructor(private queueService: QueueService, private tablesService: TableService, private socketService: SocketioService) {
+  }
 
   ngOnInit(): void {
-    this.refreshQueue();
+    this.refreshData();
     this.socketService.connectQueue().subscribe((m) => {
-      this.refreshQueue();
+      this.refreshData();
     })
   }
-  refreshQueue() {
-    this.queueService.getAllDishes().subscribe({
-      next: (items) => {
-        console.log('Items in queue retrieved');
-        this.itemsInQueue = items as Queue_Item[];
-      },
-      error: (err) => {
-        console.log('Error retrieving items from queue: ' + JSON.stringify(err));
-      }
-    });
+
+  async refreshData() {
     this.tablesService.getTables().subscribe({
       next: (tables) => {
         console.log('Tables retrieved');
         this.tables = tables as Table[];
+
+        // retrieving items data
+        this.queueService.getAllQueue().subscribe({
+          next: (items) => {
+            console.log('Items in queue retrieved');
+            this.itemsInQueue = items as Queue_Item[];
+            this.calculateTotalPrice();
+          },
+          error: (err) => {
+            console.log('Error retrieving items from queue: ' + JSON.stringify(err));
+          }
+        });
       },
       error: (err) => {
         console.log('Error retrieving tables from DB: ' + JSON.stringify(err));
@@ -43,12 +49,33 @@ export class CashierComponent implements OnInit{
     });
   }
 
-  getItemsRelatedToTable(){
-    this.tables.forEach(function (table){
-
-    });
-    this.itemsInQueue.forEach(function (item){
-
+  private getItemsRelatedToTable(tableNum: number): Queue_Item[] {
+    return this.itemsInQueue.filter((item) => {
+      return item.table == tableNum;
     })
+  }
+
+  calculateTotalPrice() {
+    this.tables.forEach((table) => {
+      table.bill = 0.0;
+      this.getItemsRelatedToTable(table.number).forEach((item) => {
+        table.bill += item.price;
+      })
+    });
+  }
+
+  emitReceipt(tableNum: number, tableBill: number) {
+    let it = this.getItemsRelatedToTable(tableNum);
+    this.queueService.emitReceipt(tableNum, it, tableBill).subscribe({
+      next: (data) => {
+        let file = new Blob([data], {type: 'application/pdf'})
+        let fileURL = URL.createObjectURL(file);
+        // if you want to open PDF in new tab
+        window.open(fileURL);
+      },
+      error: (err) => {
+        console.log('Error retrieving receipt PDF from server: ' + JSON.stringify(err));
+      }
+    });
   }
 }

@@ -4,18 +4,18 @@
     <thead>
     <tr>
       <th>Table</th>
-      <th>Total €</th>
+      <th>Total</th>
       <th>Actions</th>
     </tr>
     </thead>
 
     <tbody>
-    <tr *ngFor="let item of null">
-      <td></td>
-      <td></td>
+    <tr>
+      <td>{{table.number}}</td>
+      <td>€ {{table.bill}}</td>
       <td>
+        <button class="btn btn-success" (click)="emitReceipt(table.number, table.bill)">Emit Receipt</button>
       </td>
-      <td>{{item.status}}</td>
     </tr>
     </tbody>
   </table>

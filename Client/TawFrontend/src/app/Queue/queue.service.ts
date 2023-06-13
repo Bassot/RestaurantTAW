@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Queue_Item} from "./queue_item";
-import {tap} from "rxjs";
+import {Observable, tap} from "rxjs";
 import {UserService} from "../User/user.service";
 
 @Injectable({
@@ -35,7 +35,7 @@ export class QueueService {
   }
 
   getAllQueue() {
-    return this.httpClient.get(this.url, {
+    return this.httpClient.get(this.url + '/all', {
       headers: this.headers
     });
   }
@@ -65,5 +65,17 @@ export class QueueService {
       }, {
         headers: this.headers
       });
+  }
+
+  emitReceipt(tableNum: number, items: Queue_Item[], total: number): Observable<Blob>{
+    const params = {
+      tableNum: tableNum,
+      items: items,
+      total: total
+    };
+    return this.httpClient.post<Blob>(this.url + '/emitReceiptPDF', params, {
+      headers: this.headers,
+      responseType: 'blob' as 'json'
+    });
   }
 }
