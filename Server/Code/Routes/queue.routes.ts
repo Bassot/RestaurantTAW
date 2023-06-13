@@ -35,7 +35,7 @@ queueRouter.get('/:type', (req, res) => {
         filter = {type: 'Drink'};
 
     // else -> getting all the queue
-    queue_item.getModel().find(filter).then((items) => {
+    queue_item.getModel().find(filter).sort({timestamp: 1, table: 1}).then((items) => {
         return res.status(200).json(items);
     }).catch((err) => {
         return res.status(404).send('DB error: ' + err);

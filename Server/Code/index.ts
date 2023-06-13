@@ -139,7 +139,7 @@ mongoose.connect('mongodb://' + dbHost + ':27017/taw-app2023').then(() => {
 }).then((data) => {
     if (!data) {
         console.log("Creating tables");
-        for (let i = 1; i < 4; i++) {
+        for (let i = 1; i < 5; i++) {
             let t = table.newTable({
                 number: i,
                 seats: 4,

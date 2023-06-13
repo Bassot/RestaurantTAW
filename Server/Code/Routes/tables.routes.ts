@@ -22,7 +22,7 @@ export const tablesRouter = express.Router();
 //tablesRouter.use(express.json());
 tablesRouter.get("/", async (req, res) => {
     try {
-        let tables = await table.getModel().find({});
+        let tables = await table.getModel().find({}).sort({number: 1});
         res.status(200).send(JSON.stringify(tables));
     }
     catch (error :any) {

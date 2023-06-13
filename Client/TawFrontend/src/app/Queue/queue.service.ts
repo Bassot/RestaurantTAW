@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Queue_Item} from "./queue_item";
 import {tap} from "rxjs";
@@ -10,46 +10,60 @@ import {UserService} from "../User/user.service";
 export class QueueService {
 
   private url = 'http://localhost:8080/queue';
-  constructor(private httpClient: HttpClient, private userService: UserService) { }
+  private headers: HttpHeaders;
 
-  getOptions(){
-    return {
-      headers: new HttpHeaders({
-        //'Authorization': 'Bearer ' + this.userService.getToken(),
-        'cache-control': 'no-cache',
-        'Content-Type':  'application/json'
-      })
-    };
+  constructor(private httpClient: HttpClient, private userService: UserService) {
+    this.headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + this.userService.getToken(),
+      'cache-control': 'no-cache',
+      'Content-Type': 'application/json'
+    });
   }
 
   // insert an array of queue_items
-  insertOrder(items: Queue_Item[]){
-    return this.httpClient.post(this.url, items, this.getOptions());
+  insertOrder(items: Queue_Item[]) {
+    return this.httpClient.post(this.url, items, {
+      headers: this.headers,
+      responseType: "json"
+    });
   }
 
-  deleteTableOrder(tableId: number){
-    return this.httpClient.delete(this.url + '/table/' + tableId, this.getOptions());
+  deleteTableOrder(tableId: number) {
+    return this.httpClient.delete(this.url + '/table/' + tableId, {
+      headers: this.headers
+    });
   }
 
-  getAllQueue(){
-    return this.httpClient.get(this.url, this.getOptions());
-  }
-  getAllDishes(){
-    return this.httpClient.get(this.url+'/dish', this.getOptions());
-  }
-  getAllDrinks(){
-    return this.httpClient.get(this.url+'/drink', this.getOptions());
+  getAllQueue() {
+    return this.httpClient.get(this.url, {
+      headers: this.headers
+    });
   }
 
-  getTableItems(tableId: number){
-    return this.httpClient.get(this.url + '/table/' + tableId, this.getOptions());
+  getAllDishes() {
+    return this.httpClient.get(this.url + '/dish', {
+      headers: this.headers
+    });
   }
 
-  updateItemStatus(itemId: string, newStatus: string){
-    let params = {
-      id: itemId,
-      status: newStatus
-    }
-    return this.httpClient.post(this.url + '/update', params);
+  getAllDrinks() {
+    return this.httpClient.get(this.url + '/drink', {
+      headers: this.headers
+    });
+  }
+
+  getTableItems(tableId: number) {
+    return this.httpClient.get(this.url + '/table/' + tableId, {
+      headers: this.headers
+    });
+  }
+
+  updateItemStatus(itemId: string, newStatus: string) {
+    return this.httpClient.post(this.url + '/update', {
+        id: itemId,
+        status: newStatus
+      }, {
+        headers: this.headers
+      });
   }
 }

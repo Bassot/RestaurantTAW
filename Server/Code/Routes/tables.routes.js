@@ -55,7 +55,7 @@ exports.tablesRouter = express.Router();
 //tablesRouter.use(express.json());
 exports.tablesRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let tables = yield table.getModel().find({});
+        let tables = yield table.getModel().find({}).sort({ number: 1 });
         res.status(200).send(JSON.stringify(tables));
     }
     catch (error) {

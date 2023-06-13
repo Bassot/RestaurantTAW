@@ -9,7 +9,6 @@ import {UserService} from "../User/user.service";
 })
 export class ItemService {
   private url = 'http://localhost:8080';
-
   private headers: HttpHeaders;
   private items$: Subject<Item[]> = new Subject();
 

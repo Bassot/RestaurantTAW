@@ -23,10 +23,10 @@ export class TableService {
 
   private refreshTables() {
     this.httpClient.get<Table[]>(`${this.url}/tables`, {
-        headers: this.headers
-      }).subscribe(tables => {
-        this.tables$.next(tables);
-      });
+      headers: this.headers
+    }).subscribe(tables => {
+      this.tables$.next(tables);
+    });
   }
 
   getTables(): Subject<Table[]> {

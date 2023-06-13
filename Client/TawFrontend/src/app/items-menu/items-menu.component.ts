@@ -9,39 +9,44 @@ import {ObjectId} from "bson";
 @Component({
   selector: 'app-items-menu',
   template: `
-    <h2 class="text-center m-5">Menù</h2>
+      <div class="container" style="width: 900px; margin-top: 20px;">
 
-    <table class="table table-striped table-bordered">
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Price</th>
-        <th>Action</th>
-      </tr>
-      </thead>
+          <h2 class="text-center m-5">Menù</h2>
 
-      <tbody>
-      <tr *ngFor="let item of items$ | async">
-            <td>{{item.name}}</td>
-            <td>{{item.type}}</td>
-            <td>{{item.price}}</td>
-            <td>
-              <button class="btn btn-success" (click)="addToOrder(item.name, item.type, item.price)">Add to order</button>
-            </td>
-      </tr>
-      <br>
-      <div class="container">
-        <div class="row">
-             <div class="row text-center">
-               <button class="btn btn-primary" (click)="completeOrder()">Complete Order</button>
-             </div>
-        </div>
+          <table class="table table-striped table-bordered">
+              <thead>
+              <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Price</th>
+                  <th>Action</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let item of items$ | async">
+                  <td>{{item.name}}</td>
+                  <td>{{item.type}}</td>
+                  <td>{{item.price}}</td>
+                  <td>
+                      <button class="btn btn-success" (click)="addToOrder(item.name, item.type, item.price)">Add to
+                          order
+                      </button>
+                  </td>
+              </tr>
+              <br>
+              <div class="container">
+                  <div class="row">
+                      <div class="row text-center">
+                          <button class="btn btn-primary" (click)="completeOrder()">Complete Order</button>
+                      </div>
+                  </div>
+              </div>
+
+
+              </tbody>
+          </table>
       </div>
-
-
-      </tbody>
-    </table>
   `
 })
 export class ItemsMenuComponent implements OnInit {
