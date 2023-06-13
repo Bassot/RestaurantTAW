@@ -11,8 +11,6 @@ export class TableService {
   private url = 'http://localhost:8080';
 
   private headers: HttpHeaders;
-  private tables$: Subject<Table[]> = new Subject();
-
   constructor(private httpClient: HttpClient, private userService: UserService) {
     this.headers = new HttpHeaders({
       'Authorization': 'Bearer ' + this.userService.getToken(),
@@ -21,21 +19,10 @@ export class TableService {
     });
   }
 
-  private refreshTables() {
-    this.httpClient.get<Table[]>(`${this.url}/tables`, {
-      headers: this.headers
-    }).subscribe(tables => {
-      this.tables$.next(tables);
-    });
+  getTables() {
+    return this.httpClient.get(`${this.url}/tables`, { headers: this.headers });
   }
-
-  getTables(): Subject<Table[]> {
-    this.refreshTables();
-    return this.tables$;
-  }
-
-
-  occupyTable(number: any): Observable<string> {
+  occupyTable(number: any){
     return this.httpClient.put(`${this.url}/tables/${number}`, null, {
       headers: this.headers,
       responseType: 'text'

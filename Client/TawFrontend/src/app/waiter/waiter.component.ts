@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Table } from '../Table/table';
 import {TableService} from "../Table/table.service";
+import {SocketioService} from "../Socketio/socketio.service";
 
 @Component({
   selector: 'app-waiter',
@@ -20,7 +21,7 @@ import {TableService} from "../Table/table.service";
               </thead>
 
               <tbody>
-              <tr *ngFor="let table of tables$ | async">
+              <tr *ngFor="let table of tables">
                   <td>{{table.number}}</td>
                   <td>{{table.seats}}</td>
                   <td *ngIf="table.isFree == false">Occupied</td>
@@ -41,18 +42,27 @@ import {TableService} from "../Table/table.service";
   `
 })
 export class WaiterComponent implements OnInit {
-  tables$: Observable<Table[]> = new Observable();
-
-  constructor(private tablesService: TableService) { }
+  tables: Table[] = [];
+  constructor(private tablesService: TableService, private socketService: SocketioService) { }
 
   ngOnInit(): void {
     this.fetchTables();
+    this.socketService.connectTables().subscribe((m)=>{
+      this.fetchTables();
+    })
   }
 
   private fetchTables(): void {
-    this.tables$ = this.tablesService.getTables();
+    this.tablesService.getTables().subscribe({
+      next: (tables) => {
+        console.log('Tables retrieved');
+        this.tables = tables as Table[];
+      },
+      error: (err) => {
+        console.log('Error retrieving tables from DB: ' + JSON.stringify(err));
+      }
+    });
   }
-
 
   occupyTable(number: any): void {
     this.tablesService.occupyTable(number).subscribe({

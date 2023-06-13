@@ -42,6 +42,16 @@ queueRouter.get('/:type', (req, res) => {
     })
 });
 
+// getting all the items related to a table
+queueRouter.get('/table/:tableid', (req, res) => {
+    queue_item.getModel().find({table: req.params.tableid}).then((items) => {
+        return res.status(200).json(items);
+    }).catch((err) => {
+        return res.status(404).send('DB error: ' + err);
+    })
+
+    console.log('DELETE request for items related to table: ' + req.params.tableid);
+});
 // deleting all the items related to a table
 queueRouter.delete('/table/:tableid', (req, res) => {
     queue_item.getModel().deleteMany({table: req.params.tableid}).then((items) => {
@@ -58,7 +68,7 @@ queueRouter.delete('/table/:tableid', (req, res) => {
     console.log('DELETE request for items related to table: ' + req.params.tableid);
 });
 // updating the order
-queueRouter.post('/update', (req, res) => {
+queueRouter.put('/update', (req, res) => {
     console.log('Updating request for item: ' + JSON.stringify(req.body));
     if (req.body.id == undefined || req.body.status == undefined)
         return res.status(404).json({error: true, errormessage: "Invalid params"})

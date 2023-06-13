@@ -11,14 +11,30 @@ export class SocketioService {
   private socket: any;
 
   constructor(private userService: UserService) {
+    this.socket = io(this.userService.getUrl())
   }
 
-  connect(): Observable<any> {
-    this.socket = io(this.userService.getUrl());
-
+  connectQueue(): Observable<any> {
     return new Observable<any>((observer) => {
       this.socket.on('queue', (m: any) => {
-        console.log('Message received to queue');
+        console.log('QUEUE TOPIC: message received');
+        observer.next(m);
+      });
+      this.socket.on('error', (err: any) => {
+        console.log('Socket.io error: ' + err);
+        observer.error(err);
+      });
+      return {
+        unsubscribe: () => {
+          this.socket.disconnect();
+        }
+      };
+    });
+  }
+  connectTables(): Observable<any> {
+    return new Observable<any>((observer) => {
+      this.socket.on('tables', (m: any) => {
+        console.log('TABLES TOPIC: message received');
         observer.next(m);
       });
       this.socket.on('error', (err: any) => {

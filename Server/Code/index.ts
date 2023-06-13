@@ -62,7 +62,7 @@ app.get('/', function (req, res) {
 app.post('/login', (req, res, next) => {
     let email = req.body.email;
     let password = req.body.password;
-    console.log("New login attempt from ".green + email);
+    console.log("New login attempt from ".green + JSON.stringify(email));
 
     user.getModel().findOne({email: email}).then((user) => {
         if (!user) {

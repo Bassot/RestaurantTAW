@@ -13,14 +13,13 @@ import {SocketioService} from "../Socketio/socketio.service";
 })
 export class CookComponent implements OnInit {
   itemsInQueue: Queue_Item[] = [];
-  tables$: Observable<Table[]> = new Observable()
-
+  tables: Table[] = [];
   constructor(private queueService: QueueService, private tablesService: TableService, private socketService: SocketioService) {
   }
 
   ngOnInit(): void {
     this.refreshQueue();
-    this.socketService.connect().subscribe((m) => {
+    this.socketService.connectQueue().subscribe((m) => {
       this.refreshQueue();
     })
   }
@@ -35,7 +34,15 @@ export class CookComponent implements OnInit {
         console.log('Error retrieving items from queue: ' + JSON.stringify(err));
       }
     });
-    this.tables$ = this.tablesService.getTables();
+    this.tablesService.getTables().subscribe({
+      next: (tables) => {
+        console.log('Tables retrieved');
+        this.tables = tables as Table[];
+      },
+      error: (err) => {
+        console.log('Error retrieving tables from DB: ' + JSON.stringify(err));
+      }
+    });
   }
 
   getItemsRelatedToTable(tableNum: number): Queue_Item[] {
