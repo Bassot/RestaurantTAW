@@ -35,7 +35,7 @@ import {ObjectId} from "bson";
                       <button class="btn btn-light">{{this.quantities[i]}}
                       </button>&nbsp;
 
-                      <button type="button" class="btn btn-info" (click)="decreaseQuantity(i)"><span class="bi bi-dash"></span></button>
+                      <button type="button" class="btn btn-info" (click)="decreaseQuantity(item.name, i)"><span class="bi bi-dash"></span></button>
 
 
                   </td>
@@ -86,7 +86,6 @@ export class ItemsMenuComponent implements OnInit {
 
   increaseQuantity(name: string, type: string, price:number, i: number): void {
     this.quantities[i]=this.quantities[i]+1;
-    if(this.queue_items[i]==null){
       const item = {
         name: name,
         type: type,
@@ -94,35 +93,22 @@ export class ItemsMenuComponent implements OnInit {
         timestamp: undefined, // will be populated on server side
         status: 'Pending',
         table: this.table_number,
-        quantity:this.quantities[i]
       };
       this.queue_items.push(item);
       console.log('Item added: ' + JSON.stringify(item));
     }
-    else{
-      this.queue_items[i].quantity = this.quantities[i];
-    }
-  }
-
-  decreaseQuantity(i: number): void {
+  decreaseQuantity(name: string, i: number): void {
     if(this.quantities[i]>0){
       this.quantities[i]=this.quantities[i]-1;
-      this.queue_items[i].quantity = this.quantities[i];
+      let j=0;
+      while(this.queue_items[j].name!=name){
+        j++;
+      }
+      this.queue_items.splice(j,1);
     }
   }
 
-  addToOrder(name: string, type: string, price:number): void {
-    const item = {
-      name: name,
-      type: type,
-      price: price,
-      timestamp: undefined, // will be populated on server side
-      status: 'Pending',
-      table: this.table_number,
-    };
-    this.queue_items.push(item);
-    console.log('Item added: ' + JSON.stringify(item));
-  }
+
 
   completeOrder(): void{
     this.queueService.insertOrder(this.queue_items).subscribe({
