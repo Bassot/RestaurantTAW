@@ -36,10 +36,21 @@ exports.tablesRouter.get("/", (req, res) => {
         res.status(500).send('DB error: ' + err);
     });
 });
-exports.tablesRouter.put("/:number", (req, res) => {
+exports.tablesRouter.put("/:number&:status", (req, res) => {
     var _a;
-    const number = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.number;
-    table.getModel().findOneAndUpdate({ number: number }, { isFree: false }, { new: true }).then((table) => {
+    const filter = {
+        number: (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.number
+    };
+    let update = {};
+    if (req.params.status == 'occupied')
+        update = {
+            isFree: false
+        };
+    else if (req.params.status == 'free')
+        update = {
+            isFree: true
+        };
+    table.getModel().findOneAndUpdate(filter, update, { new: true }).then((table) => {
         notify();
         res.status(200).send("Ok, table occupied: " + table);
     }).catch((err) => {

@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from "rxjs";
 import {Table} from "../Table/table";
 import {QueueService} from "../Queue/queue.service";
 import {TableService} from "../Table/table.service";
@@ -15,36 +14,46 @@ export class CashierComponent implements OnInit {
   itemsInQueue: Queue_Item[] = [];
   tables: Table[] = [];
 
-  constructor(private queueService: QueueService, private tablesService: TableService, private socketService: SocketioService) {
-  }
+  constructor(private queueService: QueueService, private tablesService: TableService, private socketService: SocketioService) {}
 
   ngOnInit(): void {
-    this.refreshData();
+    // refreshTables is calling also the refreshQueue method
+    this.refreshTables();
+    // cashier is connected in both queue and table topic to see the updates
     this.socketService.connectQueue().subscribe((m) => {
-      this.refreshData();
-    })
+      this.refreshQueue();
+    });
+    this.socketService.connectTables().subscribe((m) => {
+      this.refreshTables();
+    });
   }
 
-  async refreshData() {
+  refreshTables() {
     this.tablesService.getTables().subscribe({
       next: (tables) => {
         console.log('Tables retrieved');
         this.tables = tables as Table[];
 
-        // retrieving items data
-        this.queueService.getAllQueue().subscribe({
-          next: (items) => {
-            console.log('Items in queue retrieved');
-            this.itemsInQueue = items as Queue_Item[];
-            this.calculateTotalPrice();
-          },
-          error: (err) => {
-            console.log('Error retrieving items from queue: ' + JSON.stringify(err));
-          }
-        });
+        // refreshing also the queue
+        this.refreshQueue();
       },
       error: (err) => {
         console.log('Error retrieving tables from DB: ' + JSON.stringify(err));
+      }
+    });
+  }
+
+  private refreshQueue(){
+    this.queueService.getAllQueue().subscribe({
+      next: (items) => {
+        console.log('Items in queue retrieved');
+        this.itemsInQueue = items as Queue_Item[];
+
+        // calculating the totals
+        this.calculateTotalPrice();
+      },
+      error: (err) => {
+        console.log('Error retrieving items from queue: ' + JSON.stringify(err));
       }
     });
   }
@@ -77,5 +86,21 @@ export class CashierComponent implements OnInit {
         console.log('Error retrieving receipt PDF from server: ' + JSON.stringify(err));
       }
     });
+  }
+
+  freeTableAndItems(tableNum: number){
+    if(confirm("Are you sure to free table "+tableNum+" and its related items?")){
+      this.queueService.deleteTableOrder(tableNum).subscribe({
+        next: (res) =>{
+          console.log('Items related to table '+tableNum+' deleted');
+
+          //free the table
+          this.tablesService.freeTable(tableNum).subscribe({
+            next: (res) => console.log('Table '+tableNum+' now is free')
+          })
+        },
+        error: (err) => console.log('Error deleting the item related to table '+tableNum)
+      })
+    }
   }
 }

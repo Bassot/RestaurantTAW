@@ -4,6 +4,7 @@
     <thead>
     <tr>
       <th>Table</th>
+      <th>Status</th>
       <th>Total</th>
       <th>Actions</th>
     </tr>
@@ -12,9 +13,13 @@
     <tbody>
     <tr>
       <td>{{table.number}}</td>
+      <td *ngIf="table.isFree">Free</td>
+      <td *ngIf="!table.isFree">Occupied</td>
       <td>€ {{table.bill}}</td>
       <td>
-        <button class="btn btn-success" (click)="emitReceipt(table.number, table.bill)">Emit Receipt</button>
+        <button class="btn btn-success" (click)="emitReceipt(table.number, table.bill)"
+                style="margin-right: 10px">Receipt</button>
+        <button class="btn btn-primary" (click)="freeTableAndItems(table.number)">Free</button>
       </td>
     </tr>
     </tbody>

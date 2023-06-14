@@ -20,6 +20,7 @@ services:
     image: taw-frontend
     volumes:
       - ./Client/TawFrontend:/app
+      - /Client/TawFrontend/node_modules
     build: ./Client/TawFrontend
     ports:
       - "4200:4200"

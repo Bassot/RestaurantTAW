@@ -30,7 +30,7 @@ import {tablesRouter} from "./Routes/tables.routes";
 import {queueRouter} from "./Routes/queue.routes";
 import {userRouter} from "./Routes/user.routes";
 import {menuRouter} from "./Routes/menu.routes";
-
+import {receiptRouter} from "./Routes/receipts.routes";
 
 const app = express();
 export let ios;
@@ -113,6 +113,7 @@ app.use("/users", auth, userRouter);
 app.use("/tables", auth, tablesRouter);
 app.use("/queue", auth, queueRouter);
 app.use("/menu", auth, menuRouter);
+app.use("/receipts", auth, receiptRouter);
 
 // the ENV var DBHOST is set only if the server is running inside a container
 const dbHost = process.env.DBHOST || '127.0.0.1';

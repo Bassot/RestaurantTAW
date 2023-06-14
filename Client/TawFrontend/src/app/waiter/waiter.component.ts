@@ -66,7 +66,7 @@ export class WaiterComponent implements OnInit {
 
   occupyTable(number: any): void {
     this.tablesService.occupyTable(number).subscribe({
-      next: (str) => this.fetchTables(),
+      next: (str) => console.log('Ok table '+number+' occupied'),
       error: (err) => console.log('Error occupying table: ' + JSON.stringify(err))
     });
   }

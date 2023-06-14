@@ -23,7 +23,13 @@ export class TableService {
     return this.httpClient.get(`${this.url}/tables`, { headers: this.headers });
   }
   occupyTable(number: any){
-    return this.httpClient.put(`${this.url}/tables/${number}`, null, {
+    return this.httpClient.put(`${this.url}/tables/${number}&occupied`, null, {
+      headers: this.headers,
+      responseType: 'text'
+    });
+  }
+  freeTable(number: any){
+    return this.httpClient.put(`${this.url}/tables/${number}&free`, null, {
       headers: this.headers,
       responseType: 'text'
     });
