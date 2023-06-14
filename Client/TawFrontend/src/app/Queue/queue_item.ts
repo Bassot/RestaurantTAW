@@ -5,5 +5,6 @@ export interface Queue_Item{
   price: number,
   timestamp: Date,    //to order te queue
   status: string,
-  table: number
+  table: number,
+  quantity: number
 }

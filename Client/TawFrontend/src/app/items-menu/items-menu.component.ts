@@ -24,14 +24,20 @@ import {ObjectId} from "bson";
               </thead>
 
               <tbody>
-              <tr *ngFor="let item of items$ | async">
-                  <td>{{item.name}}</td>
+
+              <tr *ngFor="let item of items$ | async; index as i">
+
+                <td>{{item.name}}</td>
                   <td>{{item.type}}</td>
                   <td>{{item.price}}</td>
                   <td>
-                      <button class="btn btn-success" (click)="addToOrder(item.name, item.type, item.price)">Add to
-                          order
-                      </button>
+                      <button type="button" class="btn btn-info" (click)="increaseQuantity(item.name,item.type, item.price, i)"><span class="bi bi-plus" ></span></button>&nbsp;
+                      <button class="btn btn-light">{{this.quantities[i]}}
+                      </button>&nbsp;
+
+                      <button type="button" class="btn btn-info" (click)="decreaseQuantity(i)"><span class="bi bi-dash"></span></button>
+
+
                   </td>
               </tr>
               <br>
@@ -53,6 +59,8 @@ export class ItemsMenuComponent implements OnInit {
   items$: Observable<Item[]> = new Observable();
 
   queue_items: any = [];
+
+  quantities: number[] = [];
   table_number :any;
   constructor(private itemService: ItemService,
               private route: ActivatedRoute,
@@ -63,11 +71,44 @@ export class ItemsMenuComponent implements OnInit {
     this.fetchItems();
     this.route.paramMap.subscribe(params => {
       this.table_number = params.get('number');
-    })
+    });
+    this.items$.subscribe(items=>{
+      items.forEach(item=>{
+        this.quantities.push(0);
+      });
+    });
+
   }
 
   private fetchItems(): void {
     this.items$ = this.itemService.getItems();
+  }
+
+  increaseQuantity(name: string, type: string, price:number, i: number): void {
+    this.quantities[i]=this.quantities[i]+1;
+    if(this.queue_items[i]==null){
+      const item = {
+        name: name,
+        type: type,
+        price: price,
+        timestamp: undefined, // will be populated on server side
+        status: 'Pending',
+        table: this.table_number,
+        quantity:this.quantities[i]
+      };
+      this.queue_items.push(item);
+      console.log('Item added: ' + JSON.stringify(item));
+    }
+    else{
+      this.queue_items[i].quantity = this.quantities[i];
+    }
+  }
+
+  decreaseQuantity(i: number): void {
+    if(this.quantities[i]>0){
+      this.quantities[i]=this.quantities[i]-1;
+      this.queue_items[i].quantity = this.quantities[i];
+    }
   }
 
   addToOrder(name: string, type: string, price:number): void {

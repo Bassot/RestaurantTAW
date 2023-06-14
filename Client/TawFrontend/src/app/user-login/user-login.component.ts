@@ -28,10 +28,12 @@ export class UserLoginComponent implements OnInit {
     this.userService.signIn(curUser, remember).subscribe({
       next: (res) => {
         console.log('You are logged in, response: ' + JSON.stringify(res));
+        alert(localStorage.getItem('auth_jwt'));
+
         this.home.navToHome();
       },
       error: (err) => {
-        console.log(('Login error: ' + JSON.stringify(err)));
+        alert(('Login error: ' + JSON.stringify(err)));
       }
     });
   }
