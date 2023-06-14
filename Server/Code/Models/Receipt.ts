@@ -4,14 +4,14 @@ export interface Receipt extends mongoose.Document {
     readonly _id: mongoose.Schema.Types.ObjectId,
     table: number,
     items: queueItem.Queue_Item[],
-    total: number;
+    total: number,
+    timestamp: Date
 }
 
 var ReceiptSchema = new mongoose.Schema<Receipt>( {
     table: {
         type: mongoose.SchemaTypes.Number,
-        required: true,
-        unique: true
+        required: true
     },
     items: {
         type: [queueItem.getSchema()],
@@ -20,10 +20,12 @@ var ReceiptSchema = new mongoose.Schema<Receipt>( {
     total: {
         type: mongoose.SchemaTypes.Number,
         required: true,
+    },
+    timestamp: {
+        type: mongoose.SchemaTypes.Date,
+        required: true
     }
 })
-
-
 
 
 export function getSchema() { return ReceiptSchema; }

@@ -4,6 +4,8 @@ import {QueueService} from "../Queue/queue.service";
 import {TableService} from "../Table/table.service";
 import {SocketioService} from "../Socketio/socketio.service";
 import {Queue_Item} from "../Queue/queue_item";
+import {ReceiptService} from "../Receipt/receipt.service";
+import {Receipt} from "../Receipt/receipt";
 
 @Component({
   selector: 'app-cashier',
@@ -14,7 +16,10 @@ export class CashierComponent implements OnInit {
   itemsInQueue: Queue_Item[] = [];
   tables: Table[] = [];
 
-  constructor(private queueService: QueueService, private tablesService: TableService, private socketService: SocketioService) {}
+  constructor(private queueService: QueueService,
+              private tablesService: TableService,
+              private socketService: SocketioService,
+              private receiptService: ReceiptService) {}
 
   ngOnInit(): void {
     // refreshTables is calling also the refreshQueue method
@@ -75,7 +80,25 @@ export class CashierComponent implements OnInit {
 
   emitReceipt(tableNum: number, tableBill: number) {
     let it = this.getItemsRelatedToTable(tableNum);
-    this.queueService.emitReceipt(tableNum, it, tableBill).subscribe({
+    let receipt: any = {
+      table: tableNum,
+      items: it,
+      total: tableBill,
+      timestamp: undefined
+    }
+    this.receiptService.addReceipt(receipt).subscribe({
+      next: (res) =>{
+        console.log('Receipt uploaded: ' + JSON.stringify(res));
+        this.makeReceiptPdf(tableNum, it, tableBill);
+      },
+      error: (err)=>{
+        console.log('Error uploading receipt: ' + JSON.stringify(err));
+      }
+    })
+  }
+
+  private makeReceiptPdf(tableNum: number, items: Queue_Item[], tableBill: number){
+    this.queueService.emitReceipt(tableNum, items, tableBill).subscribe({
       next: (data) => {
         let file = new Blob([data], {type: 'application/pdf'})
         let fileURL = URL.createObjectURL(file);
@@ -86,6 +109,15 @@ export class CashierComponent implements OnInit {
         console.log('Error retrieving receipt PDF from server: ' + JSON.stringify(err));
       }
     });
+  }
+
+  emitDailyReceipt(day: string){
+    if(day == 'today'){
+
+    }
+    else if(day == 'yesterday'){
+
+    }
   }
 
   freeTableAndItems(tableNum: number){
