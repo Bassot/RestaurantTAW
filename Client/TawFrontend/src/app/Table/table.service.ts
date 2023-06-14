@@ -19,8 +19,11 @@ export class TableService {
     });
   }
 
-  getTables() {
-    return this.httpClient.get(`${this.url}/tables`, { headers: this.headers });
+  getTables(waiter?: string) {
+    if(waiter!=undefined){
+      return this.httpClient.get(`${this.url}/tables`, { headers: this.headers, params: new HttpParams().set('name', waiter)});
+    }
+    return this.httpClient.get(`${this.url}/tables`, { headers: this.headers});
   }
   occupyTable(number: any){
     return this.httpClient.put(`${this.url}/tables/${number}&occupied`, null, {
