@@ -16,11 +16,6 @@ import {TableService} from "./Table/table.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ItemsMenuComponent} from "./items-menu/items-menu.component";
 import {ItemService} from "./Item/item.service";
-
-//TODO: remove auth library
-export function tokenGetter() {
-  return localStorage.getItem('auth_jwt');
-}
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,13 +34,6 @@ export function tokenGetter() {
         AppRoutingModule,
         HttpClientModule,
         ReactiveFormsModule,
-        JwtModule.forRoot({
-            config: {
-                tokenGetter: tokenGetter,
-                allowedDomains: ["http://localhost:8080"],
-                disallowedRoutes: ["http://localhost:8080/login", "http://localhost:8080/signup"],
-            },
-        }),
         FormsModule,
     ],
   providers: [

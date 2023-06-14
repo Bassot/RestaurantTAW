@@ -1,9 +1,9 @@
 import * as queue_item from "../Models/Queue_Item"
 import colors = require('colors');
 
-const PDFDocument = require('pdfkit');
 import {ios} from '../index';
 import {Queue_Item} from "../Models/Queue_Item";
+import {makeReceiptPDF} from "../Services/pdfService";
 
 colors.enabled = true;
 const express = require('express');
@@ -86,23 +86,8 @@ queueRouter.put('/update', (req, res) => {
 });
 
 queueRouter.post('/emitReceiptPDF', (req, res) => {
-    console.log('Creating receipt PDF');
-    let tableNum = req.body.tableNum;
-    let date = new Date();
-    let items = req.body.items;
-    let total = req.body.total;
-    const doc = new PDFDocument({bufferPages: true, font: 'Courier'});
-    doc.fontSize(20).text('RECEIPT table ' + tableNum);
-    doc.fontSize(12).text('Date: ' + date);
-    doc.fontSize(20).text('--------------------------------');
-    items.forEach((item) => {
-        doc.fontSize(12).text(' ' + item.name + '  €' + item.price);
-    })
-    doc.fontSize(20).text('--------------------------------');
-    doc.fontSize(15).text('TOTAL: €' + total);
-    doc.end();
-
-    doc.pipe(res);
+    console.log('Creating receipt PDF for table: ' + req.body.tableNum);
+    makeReceiptPDF(req.body.tableNum, new Date(), req.body.items, req.body.total).pipe(res);
 })
 
 function notify() {
