@@ -24,7 +24,7 @@ export class CookComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.userService.getToken() != 'Cook')
+    if(this.userService.getRole() != 'Cook')
       this.router.navigate(['/']);
     this.refreshQueue();
     this.socketService.connectQueue().subscribe((m) => {

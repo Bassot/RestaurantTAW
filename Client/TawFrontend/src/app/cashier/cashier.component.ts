@@ -27,7 +27,7 @@ export class CashierComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.userService.getToken() != 'Cashier')
+    if (this.userService.getRole() != 'Cashier')
       this.router.navigate(['/']);
     // refreshTables is calling also the refreshQueue method
     this.refreshTables();

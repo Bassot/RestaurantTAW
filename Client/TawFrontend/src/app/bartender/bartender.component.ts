@@ -25,7 +25,7 @@ export class BartenderComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    if(this.userService.getToken() != 'Bartender')
+    if(this.userService.getRole() != 'Bartender')
       this.router.navigate(['/']);
     this.refreshQueue();
     this.socketService.connectQueue().subscribe((m) => {

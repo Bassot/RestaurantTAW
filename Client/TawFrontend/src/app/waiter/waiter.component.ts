@@ -51,7 +51,7 @@ export class WaiterComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit(): void {
-    if(this.userService.getToken() != 'Waiter')
+    if(this.userService.getRole() != 'Waiter')
       this.router.navigate(['/']);
     this.fetchTables();
     this.socketService.connectTables().subscribe((m)=>{

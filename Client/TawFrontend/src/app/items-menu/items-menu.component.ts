@@ -70,7 +70,7 @@ export class ItemsMenuComponent implements OnInit {
               private userService: UserService) {}
 
   ngOnInit(): void {
-    if(this.userService.getToken() != 'Waiter')
+    if(this.userService.getRole() != 'Waiter')
       this.router.navigate(['/']);
     this.fetchItems();
     this.route.paramMap.subscribe(params => {

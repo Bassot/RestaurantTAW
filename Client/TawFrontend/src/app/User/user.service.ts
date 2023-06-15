@@ -65,7 +65,7 @@ export class UserService {
 
   isLoggedIn(): boolean {
     const now = Math.floor(Date.now() / 1000)
-    return this.token !== '' && (jwt_decode(this.token) as Token).exp < now;
+    return this.token !== '' /* && (jwt_decode(this.token) as Token).exp < now */;
   }
 
   logOut() {
