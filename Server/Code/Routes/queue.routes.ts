@@ -84,12 +84,6 @@ queueRouter.put('/update', (req, res) => {
         return res.status(404).json({error: true, errormessage: "Invalid id item"});
     })
 });
-
-queueRouter.post('/emitReceiptPDF', (req, res) => {
-    console.log('Creating receipt PDF for table: ' + req.body.tableNum);
-    makeReceiptPDF(req.body.tableNum, new Date(), req.body.items, req.body.total).pipe(res);
-})
-
 function notify() {
     let m = 'Hello';
     ios.emit('queue', m);

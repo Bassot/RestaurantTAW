@@ -8,6 +8,8 @@ import {ReceiptService} from "../Receipt/receipt.service";
 import {Receipt} from "../Receipt/receipt";
 import {UserService} from "../User/user.service";
 import {Router} from "@angular/router";
+import startOfDay from 'date-fns/startOfDay'
+import endOfDay from 'date-fns/endOfDay'
 
 @Component({
   selector: 'app-cashier',
@@ -40,6 +42,7 @@ export class CashierComponent implements OnInit {
     });
   }
 
+  // getting data from DB
   refreshTables() {
     this.tablesService.getTables().subscribe({
       next: (tables) => {
@@ -62,7 +65,7 @@ export class CashierComponent implements OnInit {
         this.itemsInQueue = items as Queue_Item[];
 
         // calculating the totals
-        this.calculateTotalPrice();
+        this.calculateTableTotalPrice();
       },
       error: (err) => {
         console.log('Error retrieving items from queue: ' + JSON.stringify(err));
@@ -70,13 +73,14 @@ export class CashierComponent implements OnInit {
     });
   }
 
+  // methods to manage the data on this client
   private getItemsRelatedToTable(tableNum: number): Queue_Item[] {
     return this.itemsInQueue.filter((item) => {
       return item.table == tableNum;
     })
   }
 
-  calculateTotalPrice() {
+  private calculateTableTotalPrice() {
     this.tables.forEach((table) => {
       table.bill = 0.0;
       this.getItemsRelatedToTable(table.number).forEach((item) => {
@@ -85,27 +89,21 @@ export class CashierComponent implements OnInit {
     });
   }
 
-  emitReceipt(tableNum: number, tableBill: number) {
-    let it = this.getItemsRelatedToTable(tableNum);
-    let receipt: any = {
-      table: tableNum,
-      items: it,
-      total: tableBill,
-      timestamp: undefined
-    }
-    this.receiptService.addReceipt(receipt).subscribe({
-      next: (res) => {
-        console.log('Receipt uploaded: ' + JSON.stringify(res));
-        this.makeReceiptPdf(tableNum, it, tableBill);
-      },
-      error: (err) => {
-        console.log('Error uploading receipt: ' + JSON.stringify(err));
-      }
+  private calculateProfitTotalPrice(receipts: Receipt[]): number {
+    let s = 0.0;
+    receipts.forEach((rec) => {
+      s += rec.total;
     })
+    return s;
   }
 
-  private makeReceiptPdf(tableNum: number, items: Queue_Item[], tableBill: number) {
-    this.queueService.emitReceipt(tableNum, items, tableBill).subscribe({
+  // single receipt methods
+  emitReceipt(tableNum: number, tableBill: number) {
+    this.makeReceiptPdf(tableNum, this.getItemsRelatedToTable(tableNum), tableBill);
+  }
+
+  makeReceiptPdf(tableNum: number, items: Queue_Item[], tableBill: number) {
+    this.receiptService.emitReceipt(tableNum, items, tableBill).subscribe({
       next: (data) => {
         let file = new Blob([data], {type: 'application/pdf'})
         let fileURL = URL.createObjectURL(file);
@@ -118,27 +116,116 @@ export class CashierComponent implements OnInit {
     });
   }
 
-  emitDailyReceipt(day: string) {
-    if (day == 'today') {
-
-    } else if (day == 'yesterday') {
-
+  private uploadReceipt(tableNum: number, tableBill: number) {
+    let receipt: any = {
+      table: tableNum,
+      items: this.getItemsRelatedToTable(tableNum),
+      total: tableBill,
+      timestamp: undefined
     }
+    this.receiptService.addReceipt(receipt).subscribe({
+      next: (res) => {
+        console.log('Receipt uploaded: ' + JSON.stringify(res));
+      },
+      error: (err) => {
+        console.log('Error uploading receipt: ' + JSON.stringify(err));
+      }
+    })
   }
 
-  freeTableAndItems(tableNum: number) {
-    if (confirm("Are you sure to free table " + tableNum + " and its related items?")) {
+  // methods to calculate profit
+  private makeProfitPdf(day1: Date, day2: Date, receipts: Receipt[], total: number) {
+    this.receiptService.emitProfit(day1, day2, receipts, total).subscribe({
+      next: (data) => {
+        let file = new Blob([data], {type: 'application/pdf'})
+        let fileURL = URL.createObjectURL(file);
+        // if you want to open PDF in new tab
+        window.open(fileURL);
+      },
+      error: (err) => {
+        console.log('Error retrieving profit PDF from server: ' + JSON.stringify(err));
+      }
+    });
+  }
+  emitDailyProfit() {
+    let today = new Date();
+    let day1 = startOfDay(today);
+    let day2 = endOfDay(today);
+    this.receiptService.getProfit(day1, day2).subscribe({
+      next: (receipts) => {
+        console.log('Receipts retrieved from DB');
+        this.makeProfitPdf(day1, day2, receipts, this.calculateProfitTotalPrice(receipts));
+      },
+      error: (err) => {
+        console.log('Error retrieving receipts from DB: ' + JSON.stringify(err));
+      }
+    })
+  }
+  emitWeeklyProfit() {
+    function getMonday(d: Date) {
+      d = new Date(d);
+      let day = d.getDay(), diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+      return new Date(d.setDate(diff));
+    }
+
+    let today = new Date();
+    let day1 = startOfDay(getMonday(today));
+    let day2 = endOfDay(today);
+    this.receiptService.getProfit(day1, day2).subscribe({
+      next: (receipts) => {
+        console.log('Receipts retrieved from DB');
+        this.makeProfitPdf(day1, day2, receipts, this.calculateProfitTotalPrice(receipts));
+      },
+      error: (err) => {
+        console.log('Error retrieving receipts from DB: ' + JSON.stringify(err));
+      }
+    })
+  }
+  emitMonthlyProfit() {
+    let today = new Date();
+    let firstDayOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    let day1 = endOfDay(firstDayOfThisMonth);
+    let day2 = endOfDay(today);
+    this.receiptService.getProfit(day1, day2).subscribe({
+      next: (receipts) => {
+        console.log('Receipts retrieved from DB');
+        this.makeProfitPdf(day1, day2, receipts, this.calculateProfitTotalPrice(receipts));
+      },
+      error: (err) => {
+        console.log('Error retrieving receipts from DB: ' + JSON.stringify(err));
+      }
+    })
+  }
+
+  // methods to free tables and their related items
+  private isEveryTableItemReady(tableNum: number): boolean {
+    return this.getItemsRelatedToTable(tableNum).every((item) => {
+      return item.status == 'Ready';
+    });
+  }
+
+  freeTableAndItems(tableNum: number, tableBill: number) {
+    if (confirm("Are you sure to free table " + tableNum + ", its related items and to store the receipt?")) {
+      if (!this.isEveryTableItemReady(tableNum)) {
+        alert('There are still some items not ready in the table ' + tableNum + ", you can' t free the table. Ping the cooks");
+        return;
+      }
+
+      // first we upload the receipt to DB
+      this.uploadReceipt(tableNum, tableBill);
+      // deleting items from queue
       this.queueService.deleteTableOrder(tableNum).subscribe({
         next: (res) => {
           console.log('Items related to table ' + tableNum + ' deleted');
 
           //free the table
-          this.tablesService.freeTable(tableNum).subscribe({
-            next: (res) => console.log('Table ' + tableNum + ' now is free')
+          this.tablesService.freeTable(tableNum, '').subscribe({
+            next: (res) => console.log('Table ' + tableNum + ' now is free'),
+            error: (err) => console.log('Error changing the table ' + tableNum + ' to free ')
           })
         },
         error: (err) => console.log('Error deleting the item related to table ' + tableNum)
-      })
+      });
     }
   }
 }

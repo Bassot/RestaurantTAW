@@ -31,7 +31,7 @@ const index_1 = require("../index");
 exports.tablesRouter = express.Router();
 //tablesRouter.use(express.json());
 exports.tablesRouter.get("/", (req, res) => {
-    if (!req.query) {
+    if (req.query.email == undefined) {
         table.getModel().find({}).sort({ number: 1 }).then((tables) => {
             res.status(200).json(tables);
         }).catch((err) => {
