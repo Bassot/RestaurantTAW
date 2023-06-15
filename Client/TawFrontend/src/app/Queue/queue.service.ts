@@ -66,4 +66,16 @@ export class QueueService {
         headers: this.headers
       });
   }
+
+  emitReceipt(tableNum: number, items: Queue_Item[], total: number): Observable<Blob>{
+    const params = {
+      tableNum: tableNum,
+      items: items,
+      total: total
+    };
+    return this.httpClient.post<Blob>(this.url + '/emitReceiptPDF', params, {
+      headers: this.headers,
+      responseType: 'blob' as 'json'
+    });
+  }
 }

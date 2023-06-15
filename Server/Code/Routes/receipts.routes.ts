@@ -1,37 +1,27 @@
 import * as receipt from '../Models/Receipt'
-import {makeProfitPDF, makeReceiptPDF} from "../Services/pdfService";
-
+import startOfDay from 'date-fns/startOfDay'
+import endOfDay from 'date-fns/endOfDay'
 const express = require('express');
 
 export const receiptRouter = express.Router();
 
-receiptRouter.post('/', (req, res) => {
+receiptRouter.post('/', (req, res)=>{
     let r = req.body;
     r.timestamp = new Date();
-    receipt.newReceipt(r).save().then((receipt) => {
+    receipt.newReceipt(r).save().then((receipt)=>{
         return res.status(200).json({error: false, errormessage: "", id: receipt._id});
-    }).catch((err) => {
+    }).catch((err)=>{
         return res.status(500).json({error: true, errormessage: "DB error: " + err.errmsg});
     })
 });
 
-receiptRouter.post('/profit', (req, res) => {
-    let start = req.body.start;
-    let end = req.body.end;
+receiptRouter.post('/day', (req, res)=>{
+    const day = req.body.day;
     receipt.getModel().find({
-        timestamp: {$gte: start, $lte: end}
-    }).then((receipts) => {
+        timestamp: { $gte: startOfDay(day), $lte: endOfDay(day) }
+    }).then((receipts)=>{
         res.status(200).json(receipts);
-    }).catch((err) => {
-        res.status(500).json({error: true, errormessage: "DB error: " + err});
+    }).catch((err)=>{
+        res.status(500).json({error: true, errormessage: "DB error: " + err.errmsg});
     });
-});
-
-receiptRouter.post('/receiptPDF', (req, res) => {
-    console.log('Creating receipt PDF for table: ' + req.body.tableNum);
-    makeReceiptPDF(req.body.tableNum, new Date(), req.body.items, req.body.total).pipe(res);
-});
-receiptRouter.post('/profitPDF', (req, res) => {
-    console.log('Creating receipt PDF for table: ' + req.body.tableNum);
-    makeProfitPDF(req.body.start, req.body.end, req.body.receipts, new Date(), req.body.total).pipe(res);
-});
+})
