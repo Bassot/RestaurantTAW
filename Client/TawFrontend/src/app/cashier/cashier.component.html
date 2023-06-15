@@ -18,11 +18,36 @@
       <td>€ {{table.bill}}</td>
       <td>
         <button class="btn btn-success" (click)="emitReceipt(table.number, table.bill)"
-                style="margin-right: 10px">Receipt</button>
-        <button class="btn btn-primary" (click)="freeTableAndItems(table.number)">Free</button>
+                style="margin-right: 10px">Receipt
+        </button>
+        <button class="btn btn-primary" (click)="freeTableAndItems(table.number, table.bill)">Free</button>
       </td>
     </tr>
     </tbody>
   </table>
+  <div style="margin-top: 50px; margin-bottom: 30px">
+    <h4>Profit</h4>
+    <div style="margin: 10px">
+      <button class="btn btn-success" (click)="emitDailyProfit()">Emit Profit of today</button>
+    </div>
+    <div style="margin: 10px">
+      <button class="btn btn-success" (click)="emitWeeklyProfit()">Emit Profit of this week</button>
+    </div>
+    <div style="margin: 10px">
+      <button class="btn btn-success" (click)="emitMonthlyProfit()">Emit Profit of this month</button>
+    </div>
+  </div>
+  <div  style="margin-top: 50px; margin-bottom: 30px">
+    <h4>Admin actions</h4>
+    <div style="margin: 10px">
+      <button class="btn btn-primary">Manage users</button>
+    </div>
+    <div style="margin: 10px">
+      <button class="btn btn-warning">Manage menù items</button>
+    </div>
+    <div style="margin: 10px">
+      <button class="btn btn-danger">Manage tables</button>
+    </div>
+  </div>
 </div>
 

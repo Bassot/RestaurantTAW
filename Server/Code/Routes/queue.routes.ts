@@ -85,11 +85,6 @@ queueRouter.put('/update', (req, res) => {
     })
 });
 
-queueRouter.post('/emitReceiptPDF', (req, res) => {
-    console.log('Creating receipt PDF for table: ' + req.body.tableNum);
-    makeReceiptPDF(req.body.tableNum, new Date(), req.body.items, req.body.total).pipe(res);
-})
-
 function notify() {
     let m = 'Hello';
     ios.emit('queue', m);
