@@ -30,7 +30,7 @@ import {Router} from "@angular/router";
                   <td *ngIf="table.isFree == false">
                       <button class="btn btn-info" [routerLink]="['/menu', {'number': table.number}]">Add order</button>
                       &nbsp;
-                      <button class="btn btn-primary" [routerLink]="['table/', table.number]">Orders status</button>
+                      <button class="btn btn-primary" [routerLink]="['/orders', {'number': table.number}]">Orders status</button>
                       &nbsp;
                   </td>
                   <td *ngIf="table.isFree == true">Free</td>
@@ -60,7 +60,7 @@ export class WaiterComponent implements OnInit {
   }
 
   private fetchTables(): void {
-    this.tablesService.getTables().subscribe({
+    this.tablesService.getTables(this.userService.getEmail()).subscribe({
       next: (tables) => {
         console.log('Tables retrieved');
         this.tables = tables as Table[];
@@ -72,7 +72,7 @@ export class WaiterComponent implements OnInit {
   }
 
   occupyTable(number: any): void {
-    this.tablesService.occupyTable(number).subscribe({
+    this.tablesService.occupyTable(number,this.userService.getEmail() ).subscribe({
       next: (str) => console.log('Ok table '+number+' occupied'),
       error: (err) => console.log('Error occupying table: ' + JSON.stringify(err))
     });

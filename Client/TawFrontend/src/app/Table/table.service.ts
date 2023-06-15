@@ -21,20 +21,24 @@ export class TableService {
 
   getTables(waiter?: string) {
     if(waiter!=undefined){
-      return this.httpClient.get(`${this.url}/tables`, { headers: this.headers, params: new HttpParams().set('name', waiter)});
+      return this.httpClient.get(`${this.url}/tables`, { headers: this.headers, params: new HttpParams().set('email', waiter)});
     }
     return this.httpClient.get(`${this.url}/tables`, { headers: this.headers});
   }
-  occupyTable(number: any){
-    return this.httpClient.put(`${this.url}/tables/${number}&occupied`, null, {
+  occupyTable(number: any, email: string){
+    const params = new HttpParams().set('action', "occupy").set('email', email);
+    return this.httpClient.put(`${this.url}/tables/${number}`, null, {
       headers: this.headers,
+      params: params,
       responseType: 'text'
     });
   }
-  freeTable(number: any){
-    return this.httpClient.put(`${this.url}/tables/${number}&free`, null, {
+  freeTable(number: any, email: string){
+    const params = new HttpParams().set('action', "free").set('email', email);
+    return this.httpClient.put(`${this.url}/tables/${number}`, null, {
       headers: this.headers,
-      responseType: 'text'
+      params: params,
+      responseType: 'text',
     });
   }
 }
