@@ -8,6 +8,7 @@ import {BartenderComponent} from "./bartender/bartender.component";
 import {HomeComponent} from "./home/home.component";
 import {CashierComponent} from "./cashier/cashier.component";
 import {ItemsMenuComponent} from "./items-menu/items-menu.component";
+import {ordersStatusComponent} from "./orders-status/orders-status.component";
 
 
 
@@ -19,7 +20,8 @@ const routes: Routes = [
   { path: 'cooks', component: CookComponent },
   { path: 'bartenders', component: BartenderComponent },
   { path: 'waiters', component: WaiterComponent },
-  { path: 'menu', component: ItemsMenuComponent }
+  { path: 'menu', component: ItemsMenuComponent },
+  { path: 'orders', component: ordersStatusComponent }
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

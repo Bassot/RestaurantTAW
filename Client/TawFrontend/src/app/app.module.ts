@@ -16,6 +16,7 @@ import {TableService} from "./Table/table.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ItemsMenuComponent} from "./items-menu/items-menu.component";
 import {ItemService} from "./Item/item.service";
+import {ordersStatusComponent} from "./orders-status/orders-status.component";
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,7 +28,8 @@ import {ItemService} from "./Item/item.service";
     CashierComponent,
     HomeComponent,
     WaiterComponent,
-    ItemsMenuComponent
+    ItemsMenuComponent,
+    ordersStatusComponent,
   ],
     imports: [
         BrowserModule,

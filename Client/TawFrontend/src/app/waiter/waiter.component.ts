@@ -30,7 +30,7 @@ import {Router} from "@angular/router";
                   <td *ngIf="table.isFree == false">
                       <button class="btn btn-info" [routerLink]="['/menu', {'number': table.number}]">Add order</button>
                       &nbsp;
-                      <button class="btn btn-primary" [routerLink]="['table/', table.number]">Orders status</button>
+                      <button class="btn btn-primary" [routerLink]="['/orders', {'number': table.number}]">Orders status</button>
                       &nbsp;
                   </td>
                   <td *ngIf="table.isFree == true">Free</td>
