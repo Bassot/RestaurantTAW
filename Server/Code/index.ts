@@ -145,7 +145,7 @@ mongoose.connect('mongodb://' + dbHost + ':27017/taw-app2023').then(() => {
                 number: i,
                 seats: 4,
                 isFree: true,
-                bill: 0
+                bill: 0,
             });
             t.save();
         }

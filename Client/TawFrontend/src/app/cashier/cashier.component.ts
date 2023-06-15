@@ -133,7 +133,7 @@ export class CashierComponent implements OnInit {
           console.log('Items related to table ' + tableNum + ' deleted');
 
           //free the table
-          this.tablesService.freeTable(tableNum).subscribe({
+          this.tablesService.freeTable(tableNum, this.userService.getEmail()).subscribe({
             next: (res) => console.log('Table ' + tableNum + ' now is free')
           })
         },

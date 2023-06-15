@@ -25,36 +25,65 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tablesRouter = void 0;
 const table = __importStar(require("../Models/Table"));
+const user = __importStar(require("../Models/User"));
 const express = require('express');
 const index_1 = require("../index");
 exports.tablesRouter = express.Router();
 //tablesRouter.use(express.json());
 exports.tablesRouter.get("/", (req, res) => {
-    table.getModel().find({}).sort({ number: 1 }).then((tables) => {
-        res.status(200).json(tables);
-    }).catch((err) => {
-        res.status(500).send('DB error: ' + err);
-    });
+    if (!req.params) {
+        table.getModel().find({}).sort({ number: 1 }).then((tables) => {
+            res.status(200).json(tables);
+        }).catch((err) => {
+            res.status(500).send('DB error: ' + err);
+        });
+    }
+    else {
+        const usermail = req.params.email;
+        user.getModel().findOne({ email: usermail }).then((user) => {
+            if (user) {
+                table.getModel().find({ waiter: user._id }).sort({ number: 1 }).then((tables) => {
+                    res.status(200).json(tables);
+                });
+            }
+            else {
+                res.status(404).send(`Failed to find the user`);
+            }
+        }).catch((err) => {
+            res.status(500).send('DB error: ' + err);
+        });
+        table.getModel().find({}).sort({ number: 1 }).then((tables) => {
+            res.status(200).json(tables);
+        }).catch((err) => {
+            res.status(500).send('DB error: ' + err);
+        });
+    }
 });
-exports.tablesRouter.put("/:number&:status", (req, res) => {
-    var _a;
-    const filter = {
-        number: (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.number
-    };
-    let update = {};
-    if (req.params.status == 'occupied')
-        update = {
-            isFree: false
-        };
-    else if (req.params.status == 'free')
-        update = {
-            isFree: true
-        };
-    table.getModel().findOneAndUpdate(filter, update, { new: true }).then((table) => {
-        notify();
-        res.status(200).send("Ok, table occupied: " + table);
-    }).catch((err) => {
-        res.status(500).send('DB error: ' + err);
+exports.tablesRouter.put("/:number", (req, res) => {
+    const usermail = req.params.email;
+    user.getModel().findOne({ email: usermail }).then((user) => {
+        if (user) {
+            const filter = {
+                number: req.params.number
+            };
+            let update = {};
+            if (req.params.action == 'occupy')
+                update = {
+                    isFree: false,
+                    waiter: user._id
+                };
+            else if (req.params.action == 'free')
+                update = {
+                    isFree: true,
+                    waiter: null
+                };
+            table.getModel().findOneAndUpdate(filter, update, { new: true }).then((table) => {
+                notify();
+                res.status(200).send("Ok, table occupied: " + table);
+            }).catch((err) => {
+                res.status(500).send('DB error: ' + err);
+            });
+        }
     });
 });
 function notify() {
