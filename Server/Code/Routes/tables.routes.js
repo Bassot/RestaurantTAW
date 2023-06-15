@@ -31,7 +31,7 @@ const index_1 = require("../index");
 exports.tablesRouter = express.Router();
 //tablesRouter.use(express.json());
 exports.tablesRouter.get("/", (req, res) => {
-    if (!req.params) {
+    if (!req.query) {
         table.getModel().find({}).sort({ number: 1 }).then((tables) => {
             res.status(200).json(tables);
         }).catch((err) => {
@@ -39,40 +39,35 @@ exports.tablesRouter.get("/", (req, res) => {
         });
     }
     else {
-        const usermail = req.params.email;
-        user.getModel().findOne({ email: usermail }).then((user) => {
+        user.getModel().findOne({ email: req.query.email }).then((user) => {
             if (user) {
-                table.getModel().find({ waiter: user._id }).sort({ number: 1 }).then((tables) => {
+                table.getModel().find({ $or: [
+                        { waiter: user._id },
+                        { isFree: true }
+                    ] }).sort({ number: 1 }).then((tables) => {
                     res.status(200).json(tables);
                 });
             }
-            else {
-                res.status(404).send(`Failed to find the user`);
-            }
-        }).catch((err) => {
-            res.status(500).send('DB error: ' + err);
-        });
-        table.getModel().find({}).sort({ number: 1 }).then((tables) => {
-            res.status(200).json(tables);
         }).catch((err) => {
             res.status(500).send('DB error: ' + err);
         });
     }
 });
 exports.tablesRouter.put("/:number", (req, res) => {
-    const usermail = req.params.email;
-    user.getModel().findOne({ email: usermail }).then((user) => {
-        if (user) {
+    user.getModel().findOne({ email: req.query.email }).then((user) => {
+        if (user != null) {
+            console.log(user._id);
             const filter = {
                 number: req.params.number
             };
             let update = {};
-            if (req.params.action == 'occupy')
+            console.log(req.query.action);
+            if (req.query.action == 'occupy')
                 update = {
                     isFree: false,
                     waiter: user._id
                 };
-            else if (req.params.action == 'free')
+            else if (req.query.action == 'free')
                 update = {
                     isFree: true,
                     waiter: null
@@ -83,6 +78,9 @@ exports.tablesRouter.put("/:number", (req, res) => {
             }).catch((err) => {
                 res.status(500).send('DB error: ' + err);
             });
+        }
+        else {
+            console.log("sticazzi");
         }
     });
 });

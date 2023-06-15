@@ -26,21 +26,19 @@ export class TableService {
     return this.httpClient.get(`${this.url}/tables`, { headers: this.headers});
   }
   occupyTable(number: any, email: string){
-    let params = new HttpParams();
-    params.append('action', 'occupy');
-    params.append('waiter', email);
+    const params = new HttpParams().set('action', "occupy").set('email', email);
     return this.httpClient.put(`${this.url}/tables/${number}`, null, {
       headers: this.headers,
-      responseType: 'text', params: params}
-      );
+      params: params,
+      responseType: 'text'
+    });
   }
   freeTable(number: any, email: string){
-    let params = new HttpParams();
-    params.append('action', 'free');
-    params.append('waiter', email);
+    const params = new HttpParams().set('action', "free").set('email', email);
     return this.httpClient.put(`${this.url}/tables/${number}`, null, {
       headers: this.headers,
-      responseType: 'text', params: params
+      params: params,
+      responseType: 'text',
     });
   }
 }
