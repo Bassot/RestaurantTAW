@@ -6,6 +6,7 @@ import {Queue_Item} from "../Queue/queue_item";
 import {ActivatedRoute, Router} from "@angular/router";
 import {QueueService} from "../Queue/queue.service";
 import {ObjectId} from "bson";
+import {UserService} from "../User/user.service";
 @Component({
   selector: 'app-items-menu',
   template: `
@@ -65,9 +66,12 @@ export class ItemsMenuComponent implements OnInit {
   constructor(private itemService: ItemService,
               private route: ActivatedRoute,
               private queueService: QueueService,
-              private router: Router) {}
+              private router: Router,
+              private userService: UserService) {}
 
   ngOnInit(): void {
+    if(this.userService.getToken() != 'Waiter')
+      this.router.navigate(['/']);
     this.fetchItems();
     this.route.paramMap.subscribe(params => {
       this.table_number = params.get('number');

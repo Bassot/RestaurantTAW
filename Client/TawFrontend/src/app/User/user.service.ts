@@ -8,8 +8,9 @@ import jwt_decode from 'jwt-decode';
 interface Token{
   email: string,
   username: string,
-  role: string
-  id: string
+  role: string,
+  id: string,
+  exp: any
 }
 interface ReceivedToken {
   token: string;
@@ -63,7 +64,8 @@ export class UserService {
   }
 
   isLoggedIn(): boolean {
-    return this.token !== '';
+    const now = Math.floor(Date.now() / 1000)
+    return this.token !== '' && (jwt_decode(this.token) as Token).exp < now;
   }
 
   logOut() {
@@ -72,17 +74,10 @@ export class UserService {
     console.log('Logged out');
   }
 
-  private refreshUsers() {
+  getUsers() {
     this.http.get<User[]>(`${this.url}/users`, {
       headers: this.headers
-    }).subscribe(users => {
-        this.users$.next(users);
-      });
-  }
-
-  getUsers(): Subject<User[]> {
-    this.refreshUsers();
-    return this.users$;
+    });
   }
 
   createUser(user: User) {

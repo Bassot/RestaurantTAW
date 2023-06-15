@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { Table } from '../Table/table';
 import {TableService} from "../Table/table.service";
 import {SocketioService} from "../Socketio/socketio.service";
+import {UserService} from "../User/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-waiter',
@@ -43,9 +45,14 @@ import {SocketioService} from "../Socketio/socketio.service";
 })
 export class WaiterComponent implements OnInit {
   tables: Table[] = [];
-  constructor(private tablesService: TableService, private socketService: SocketioService) { }
+  constructor(private tablesService: TableService,
+              private socketService: SocketioService,
+              private userService: UserService,
+              private router: Router) { }
 
   ngOnInit(): void {
+    if(this.userService.getToken() != 'Waiter')
+      this.router.navigate(['/']);
     this.fetchTables();
     this.socketService.connectTables().subscribe((m)=>{
       this.fetchTables();

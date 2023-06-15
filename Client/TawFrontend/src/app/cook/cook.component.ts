@@ -5,6 +5,8 @@ import {TableService} from "../Table/table.service";
 import {QueueService} from "../Queue/queue.service";
 import {Queue_Item} from "../Queue/queue_item";
 import {SocketioService} from "../Socketio/socketio.service";
+import {UserService} from "../User/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-cook',
@@ -14,10 +16,16 @@ import {SocketioService} from "../Socketio/socketio.service";
 export class CookComponent implements OnInit {
   itemsInQueue: Queue_Item[] = [];
   tables: Table[] = [];
-  constructor(private queueService: QueueService, private tablesService: TableService, private socketService: SocketioService) {
+  constructor(private queueService: QueueService,
+              private tablesService: TableService,
+              private socketService: SocketioService,
+              private userService: UserService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
+    if(this.userService.getToken() != 'Cook')
+      this.router.navigate(['/']);
     this.refreshQueue();
     this.socketService.connectQueue().subscribe((m) => {
       this.refreshQueue();

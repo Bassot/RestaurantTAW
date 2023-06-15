@@ -8,7 +8,12 @@ import {AppComponent} from "../app.component";
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent{
-  constructor() {}
+export class HomeComponent implements OnInit{
+  constructor(private userService: UserService, private home: AppComponent) {}
+
+  ngOnInit(): void {
+    if(this.userService.isLoggedIn())
+      this.home.navToHome();
+  }
 
 }

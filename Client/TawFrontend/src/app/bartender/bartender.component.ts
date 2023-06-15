@@ -5,6 +5,8 @@ import {Table} from "../Table/table";
 import {QueueService} from "../Queue/queue.service";
 import {TableService} from "../Table/table.service";
 import {SocketioService} from "../Socketio/socketio.service";
+import {UserService} from "../User/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-bartender',
@@ -15,10 +17,16 @@ export class BartenderComponent implements OnInit{
   itemsInQueue: Queue_Item[] = [];
   tables: Table[] = [];
 
-  constructor(private queueService: QueueService, private tablesService: TableService, private socketService: SocketioService) {
+  constructor(private queueService: QueueService,
+              private tablesService: TableService,
+              private socketService: SocketioService,
+              private userService: UserService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
+    if(this.userService.getToken() != 'Bartender')
+      this.router.navigate(['/']);
     this.refreshQueue();
     this.socketService.connectQueue().subscribe((m) => {
       this.refreshQueue();

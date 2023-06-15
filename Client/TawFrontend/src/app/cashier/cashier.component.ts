@@ -6,6 +6,8 @@ import {SocketioService} from "../Socketio/socketio.service";
 import {Queue_Item} from "../Queue/queue_item";
 import {ReceiptService} from "../Receipt/receipt.service";
 import {Receipt} from "../Receipt/receipt";
+import {UserService} from "../User/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-cashier',
@@ -19,9 +21,14 @@ export class CashierComponent implements OnInit {
   constructor(private queueService: QueueService,
               private tablesService: TableService,
               private socketService: SocketioService,
-              private receiptService: ReceiptService) {}
+              private receiptService: ReceiptService,
+              private userService: UserService,
+              private router: Router) {
+  }
 
   ngOnInit(): void {
+    if (this.userService.getToken() != 'Cashier')
+      this.router.navigate(['/']);
     // refreshTables is calling also the refreshQueue method
     this.refreshTables();
     // cashier is connected in both queue and table topic to see the updates
@@ -48,7 +55,7 @@ export class CashierComponent implements OnInit {
     });
   }
 
-  private refreshQueue(){
+  private refreshQueue() {
     this.queueService.getAllQueue().subscribe({
       next: (items) => {
         console.log('Items in queue retrieved');
@@ -87,17 +94,17 @@ export class CashierComponent implements OnInit {
       timestamp: undefined
     }
     this.receiptService.addReceipt(receipt).subscribe({
-      next: (res) =>{
+      next: (res) => {
         console.log('Receipt uploaded: ' + JSON.stringify(res));
         this.makeReceiptPdf(tableNum, it, tableBill);
       },
-      error: (err)=>{
+      error: (err) => {
         console.log('Error uploading receipt: ' + JSON.stringify(err));
       }
     })
   }
 
-  private makeReceiptPdf(tableNum: number, items: Queue_Item[], tableBill: number){
+  private makeReceiptPdf(tableNum: number, items: Queue_Item[], tableBill: number) {
     this.queueService.emitReceipt(tableNum, items, tableBill).subscribe({
       next: (data) => {
         let file = new Blob([data], {type: 'application/pdf'})
@@ -111,27 +118,26 @@ export class CashierComponent implements OnInit {
     });
   }
 
-  emitDailyReceipt(day: string){
-    if(day == 'today'){
+  emitDailyReceipt(day: string) {
+    if (day == 'today') {
 
-    }
-    else if(day == 'yesterday'){
+    } else if (day == 'yesterday') {
 
     }
   }
 
-  freeTableAndItems(tableNum: number){
-    if(confirm("Are you sure to free table "+tableNum+" and its related items?")){
+  freeTableAndItems(tableNum: number) {
+    if (confirm("Are you sure to free table " + tableNum + " and its related items?")) {
       this.queueService.deleteTableOrder(tableNum).subscribe({
-        next: (res) =>{
-          console.log('Items related to table '+tableNum+' deleted');
+        next: (res) => {
+          console.log('Items related to table ' + tableNum + ' deleted');
 
           //free the table
           this.tablesService.freeTable(tableNum).subscribe({
-            next: (res) => console.log('Table '+tableNum+' now is free')
+            next: (res) => console.log('Table ' + tableNum + ' now is free')
           })
         },
-        error: (err) => console.log('Error deleting the item related to table '+tableNum)
+        error: (err) => console.log('Error deleting the item related to table ' + tableNum)
       })
     }
   }
