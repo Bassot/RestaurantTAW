@@ -42,7 +42,7 @@ export class CashierComponent implements OnInit {
     });
   }
 
-  // getting data from DB
+  //  getting data from DB
   refreshTables() {
     this.tablesService.getTables().subscribe({
       next: (tables) => {
